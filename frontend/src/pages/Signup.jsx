@@ -76,15 +76,11 @@ export default function SignupPage() {
           <div className="mx-auto w-full max-w-xl">
             <div className="rounded-4xl border border-white/70 bg-white/80 p-8 shadow-2xl shadow-slate-200/50 backdrop-blur xl:p-10">
               <div className="mb-8 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-sky-500 text-2xl font-bold text-white shadow-xl shadow-blue-500/25">
-                  M
-                </div>
+             
                 <h2 className="text-3xl font-bold tracking-tight text-slate-900">
                   Create Your Account
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
-                  Sign up to start tracking bugs and features.
-                </p>
+                
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -169,18 +165,8 @@ export default function SignupPage() {
               </form>
 
               <div className="mt-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-slate-200" />
-                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-                    Secure Access
-                  </span>
-                  <div className="h-px flex-1 bg-slate-200" />
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                  Your account gives you role-based access to your team's
-                  projects and bugs.
-                </div>
+             
+            
 
                 <p className="text-center text-sm text-slate-500">
                   Already have an account?{' '}

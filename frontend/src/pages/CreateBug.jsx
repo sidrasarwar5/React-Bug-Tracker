@@ -178,7 +178,7 @@ export default function CreateBugPage() {
               disabled={submitting}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 sm:col-span-2"
             >
-              {submitting ? "Creating..." : "Create Bug"}
+              {submitting ? "Creating..." : "Create"}
             </button>
           </form>
         </div>

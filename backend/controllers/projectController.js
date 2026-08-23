@@ -65,12 +65,12 @@ async function AssignProject(req, res) {
           } else {
             return res
               .status(403)
-              .json({ error: "manager send role is not match" });
+              .json({ error: "The role has not matched to email." });
           }
         } else {
           return res
             .status(403)
-            .json({ error: "no user found qa or developer" });
+            .json({ error: "No such qa or developer found" });
         }
       } else {
         return res.status(400).json({ error: "manger id failed to match" });

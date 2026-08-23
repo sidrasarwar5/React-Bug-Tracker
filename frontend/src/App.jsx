@@ -9,6 +9,7 @@ import DeveloperPage from './pages/developer'
 import CreateBugPage from './pages/CreateBug'
 import ProjectBugsPage from './pages/ProjectBugs'
 import UpdatestatusPage from './pages/UpdateStatus'
+
 // import './App.css'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
          <Route path="/projects/:projectId" element={<CreateBugPage />} />
          <Route path="/projects/:projectId/bugs" element={<ProjectBugsPage />} />
           <Route path="/projects/:projectId/bugs/:bugId" element={<UpdatestatusPage />} />
+        
 
         </Routes>
       </BrowserRouter>

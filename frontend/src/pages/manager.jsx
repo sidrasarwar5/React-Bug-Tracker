@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   getProjects,
   createProject,
@@ -119,10 +120,11 @@ export default function ManagerPage() {
                 className="rounded-2xl border border-slate-200 bg-white p-5"
               >
                 <div className="mb-4 flex items-center justify-between">
+                 <Link to= {`/projects/${project._id}/bugs`}>
                   <h2 className="text-xl font-bold text-slate-900">
                     {project.name}
                   </h2>
-
+</Link>
                   <button
                     onClick={() => handleDelete(project._id)}
                     className="text-sm font-semibold text-red-600"

@@ -55,9 +55,7 @@ async function CreateBug(req, res) {
               .json({ error: "this developer not assigned to project" });
           }
         } else {
-          return res
-            .status(403)
-            .json({ error: "Developer not add" });
+          return res.status(403).json({ error: "Developer not add" });
         }
       } else {
         return res.status(403).json({ error: "Qa is not assigned" });
@@ -65,18 +63,18 @@ async function CreateBug(req, res) {
     } else {
       return res.status(403).json({ error: "project not found" });
     }
-  }  catch (error) {
-  if (error.name === "ValidationError") {
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        error: "Please fill all required fields",
+      });
+    }
+
     return res.status(400).json({
-      error: "Please fill all required fields"
+      error: "Failed to create bug",
     });
   }
-
-  return res.status(400).json({
-    error: "Failed to create bug"
-  });
 }
-  }
 
 async function UpdateStatus(req, res) {
   try {
@@ -91,6 +89,20 @@ async function UpdateStatus(req, res) {
         if (bugVerify) {
           const check = bug.assignToDev.toString() === req.userId;
           if (check) {
+            if ((bug.type === "bug" && bug.status === "resolved")) {
+              return res
+                .status(403)
+                .json({
+                  error: "This bug was already resolved.",
+                });
+            }
+            if((bug.type === "feature" && bug.status === "completed")){
+               return res
+                .status(403)
+                .json({
+                  error: "This feature was already completed.",
+                });
+            }
             bug.status = status;
             await bug.save();
             return res.json(bug);

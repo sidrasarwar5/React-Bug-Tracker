@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BugDetail, UpdateStatus } from "../api/bug";
+import { useAuth } from "../context/auth"
 
 export default function UpdateStatusPage() {
   const { projectId, bugId } = useParams();
-
+const { user } = useAuth();
   const [bug, setBug] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -114,7 +115,7 @@ export default function UpdateStatusPage() {
               <p className="text-sm font-semibold text-slate-500">Deadline</p>
 
               <p className="mt-1 text-slate-800">
-                {bug.deadline || "No deadline"}
+                {new Date(bug.deadline).toLocaleDateString() || "No deadline"}
               </p>
             </div>
 
@@ -146,7 +147,7 @@ export default function UpdateStatusPage() {
 )}
           </div>
         </div>
-
+{user.user_type === "developer" && (
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
           <h2 className="mb-4 text-lg font-bold text-slate-900">
             Update Bug Status
@@ -178,7 +179,9 @@ export default function UpdateStatusPage() {
             </button>
           </form>
         </div>
+         )}
       </div>
+     
     </div>
   );
 }
