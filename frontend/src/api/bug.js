@@ -22,3 +22,4 @@ export async function getProjectBugs(projectId) {
   return response.data;
 }
 
+

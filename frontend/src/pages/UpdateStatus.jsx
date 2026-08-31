@@ -72,7 +72,7 @@ const { user } = useAuth();
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-10">
       <div className="mx-auto max-w-3xl">
-        {/* Error */}
+   
         {error && (
           <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             {error}
@@ -118,6 +118,14 @@ const { user } = useAuth();
                 {new Date(bug.deadline).toLocaleDateString() || "No deadline"}
               </p>
             </div>
+            <div>
+  <p className="text-sm font-semibold text-slate-500">Assigned Developer</p>
+  <p className="mt-1 text-slate-800">
+    {bug.assignToDev
+      ? `${bug.assignToDev.name} (${bug.assignToDev.email})`
+      : "Not assigned"}
+  </p>
+</div>
 
             <div>
               <p className="text-sm font-semibold text-slate-500">

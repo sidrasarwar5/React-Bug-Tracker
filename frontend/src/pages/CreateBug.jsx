@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProjectBugs, CreateBug } from "../api/bug";
 import { getProjects } from "../api/project";
+import { Link } from "react-router-dom";
 
 export default function CreateBugPage() {
   const { projectId } = useParams();
@@ -96,7 +97,7 @@ export default function CreateBugPage() {
   if (loading && bugs.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <p className="text-slate-500">Loading bugs...</p>
+        <p className="text-slate-500">Loading ...</p>
       </div>
     );
   }
@@ -105,7 +106,7 @@ export default function CreateBugPage() {
     <div className="min-h-screen bg-slate-50 px-4 py-10">
       <div className="mx-auto max-w-3xl">
         <h1 className="mb-6 text-3xl font-bold text-slate-900">
-          Create & Manage Bugs
+          Create & Manage Bugs and feature
         </h1>
 
         {error && (
@@ -115,9 +116,7 @@ export default function CreateBugPage() {
         )}
 
         <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-5">
-          <h2 className="mb-4 text-lg font-bold text-slate-900">
-            Create New Bug
-          </h2>
+          <h2 className="mb-4 text-lg font-bold text-slate-900">Create</h2>
 
           <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
             <input
@@ -198,7 +197,9 @@ export default function CreateBugPage() {
               className="rounded-2xl border border-slate-200 bg-white p-4"
             >
               <div className="flex items-center justify-between">
-                <p className="font-semibold text-slate-900">{bug.title}</p>
+                <Link to={`/projects/${projectId}/bugs/${bug._id}`}>
+                  <p className="font-semibold text-slate-900">{bug.title}</p>
+                </Link>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                   {bug.status}
                 </span>

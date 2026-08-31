@@ -129,7 +129,7 @@ async function UpdateStatus(req, res) {
 
 async function BugDetail(req, res) {
   try {
-    const bug = await Bug.findById(req.params.bugId);
+    const bug = await Bug.findById(req.params.bugId).populate('assignToDev', 'name email');
     if (bug) {
       const bugVerify = bug.projectRef.toString() === req.params.projectId;
       if (bugVerify) {
