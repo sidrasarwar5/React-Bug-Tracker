@@ -18,6 +18,7 @@ export default function LoginPage() {
       setError("Email is required");
       return;
     }
+    
     if (!form.password.trim()) {
       setError("Password is required");
       return;

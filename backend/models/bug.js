@@ -1,12 +1,18 @@
 const mongoose = require ('mongoose')
-const User = require('../models/user')
-const Project = require('../models/project')
-
 
 const BugSchema = new mongoose.Schema({
     title : {type : String , required : true},
     desc : {type: String },
-    deadline: {type: Date , required:  true},
+    deadline: {
+  type: Date,
+  required: true,
+  validate: {
+    validator: function (value) {
+      return value > new Date();
+    },
+    message: "Deadline cannot be in the past",
+  },
+},
     img : {type: String},
     type : { type : String , enum :['bug', 'feature'] , required:  true },
     status : {

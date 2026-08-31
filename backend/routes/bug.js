@@ -1,14 +1,30 @@
 const express = require("express");
+
+const { Authentication, Authorization, Upload } = require("../middleware");
+const BugController = require("../app/bugs/BugController");
+
+const BUGS_ROUTES_PREFIX = "/projects/:projectId";
+const BUG_ROUTES_PREFIX = `${BUGS_ROUTES_PREFIX}/bug`;
+
 const router = express.Router();
-const verify = require("../middleware/verifyToken");
-const auth = require("../middleware/auth");
-const {upload} = require('../middleware/upload')
-const { CreateBug, BugDetail , UpdateStatus , GetProjectBugs} = require("../controllers/bugController");
 
+router.use(Authentication.authenticate);
 
-router.get("/projects/:projectId/bugs", verify, GetProjectBugs);
-router.post("/projects/:projectId/bug", verify, auth("qa"), upload.single('img'), CreateBug);
-router.get("/projects/:projectId/bug/:bugId", verify, BugDetail);
-router.patch( "/projects/:projectId/bug/:bugId/status", verify, auth("developer"), UpdateStatus);
+router.get(`${BUGS_ROUTES_PREFIX}/bugs`, BugController.getProjectBugs);
+
+router.post(
+  BUG_ROUTES_PREFIX,
+  Authorization.auth("qa"),
+  Upload.single("img"),
+  BugController.createBug
+);
+
+router.get(`${BUG_ROUTES_PREFIX}/:bugId`, BugController.bugDetail);
+
+router.patch(
+  `${BUG_ROUTES_PREFIX}/:bugId/status`,
+  Authorization.auth("developer"),
+  BugController.updateStatus
+);
 
 module.exports = router;

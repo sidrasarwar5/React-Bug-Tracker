@@ -1,13 +1,32 @@
 const express = require("express");
-const router = express.Router();
-const verify = require("../middleware/verifyToken");
-const auth = require("../middleware/auth");
-const Project = require("../models/project");
-const { CreateProject, DeleteProject, AssignProject,GetProjects, } = require("../controllers/projectController");
 
-router.post("/projects", verify, auth("manager"), CreateProject);
-router.get('/projects' , verify  , GetProjects)
-router.delete("/projects/:projectId", verify, auth("manager"), DeleteProject);
-router.patch( "/projects/:projectId/assign", verify, auth("manager"), AssignProject);
+const { Authentication, Authorization } = require("../middleware");
+const ProjectController = require("../app/projects/ProjectController");
+
+const PROJECTS_ROUTES_PREFIX = "/projects";
+
+const router = express.Router();
+
+router.use(Authentication.authenticate);
+
+router.post(
+  PROJECTS_ROUTES_PREFIX,
+  Authorization.auth("manager"),
+  ProjectController.createProject
+);
+
+router.get(PROJECTS_ROUTES_PREFIX, ProjectController.getProjects);
+
+router.delete(
+  `${PROJECTS_ROUTES_PREFIX}/:projectId`,
+  Authorization.auth("manager"),
+  ProjectController.deleteProject
+);
+
+router.patch(
+  `${PROJECTS_ROUTES_PREFIX}/:projectId/assign`,
+  Authorization.auth("manager"),
+  ProjectController.assignProject
+);
 
 module.exports = router;
