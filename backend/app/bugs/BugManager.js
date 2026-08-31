@@ -2,33 +2,34 @@ const { SendMail } = require("../../utils/mail");
 const User = require("../../models/user");
 const Project = require("../../models/project");
 const Bug = require("../../models/bug");
+const AppError = require("../../helpers/AppError");
 
 async function createBug({ projectId, userId, title, desc, deadline, type, status, assignToDev, img }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new Error("project not found");
+    throw new AppError("project not found", 404);
   }
 
   const isAssignedQa = project.assignedqas.some((id) => id.toString() === userId);
   if (!isAssignedQa) {
-    throw new Error("Qa is not assigned");
+    throw new AppError("Qa is not assigned", 403);
   }
 
   const devUser = await User.findOne({ email: assignToDev });
   if (!devUser) {
-    throw new Error("Developer not add");
+    throw new AppError("Developer not add", 404);
   }
 
   const devVerify = project.assigneddeveloper.some(
     (id) => id.toString() === devUser._id.toString()
   );
   if (!devVerify) {
-    throw new Error("this developer not assigned to project");
+    throw new AppError("this developer not assigned to project", 403);
   }
 
   const existingTitle = await Bug.findOne({ title, projectRef: projectId });
   if (existingTitle) {
-    throw new Error("title exists");
+    throw new AppError("title exists", 409);
   }
 
   const qaInfo = await User.findById(userId);
@@ -54,28 +55,28 @@ async function createBug({ projectId, userId, title, desc, deadline, type, statu
 async function updateStatus({ projectId, bugId, userId, status }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new Error("no such project found");
+    throw new AppError("no such project found", 404);
   }
 
   const bug = await Bug.findById(bugId);
   if (!bug) {
-    throw new Error("no such bug available");
+    throw new AppError("no such bug available", 404);
   }
 
   if (bug.projectRef.toString() !== projectId) {
-    throw new Error("bug does not belong to this project");
+    throw new AppError("bug does not belong to this project", 403);
   }
 
   if (bug.assignToDev.toString() !== userId) {
-    throw new Error("no such developer is assigned to bug");
+    throw new AppError("no such developer is assigned to bug", 403);
   }
 
   if (bug.type === "bug" && bug.status === "resolved") {
-    throw new Error("This bug was already resolved.");
+    throw new AppError("This bug was already resolved.", 403);
   }
 
   if (bug.type === "feature" && bug.status === "completed") {
-    throw new Error("This feature was already completed.");
+    throw new AppError("This feature was already completed.", 403);
   }
 
   bug.status = status;
@@ -87,11 +88,11 @@ async function updateStatus({ projectId, bugId, userId, status }) {
 async function bugDetail({ projectId, bugId }) {
   const bug = await Bug.findById(bugId).populate("assignToDev", "name email");
   if (!bug) {
-    throw new Error("Bug not found");
+    throw new AppError("Bug not found", 404);
   }
 
   if (bug.projectRef.toString() !== projectId) {
-    throw new Error("bug tot refer to this project");
+    throw new AppError("bug tot refer to this project", 403);
   }
 
   return {
@@ -104,7 +105,7 @@ async function bugDetail({ projectId, bugId }) {
 async function getProjectBugs({ projectId, userId }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new Error("No such project found");
+    throw new AppError("No such project found", 404);
   }
 
   const isManager = project.creater.toString() === userId;
@@ -112,7 +113,7 @@ async function getProjectBugs({ projectId, userId }) {
   const isDeveloper = project.assigneddeveloper.some((id) => id.toString() === userId);
 
   if (!isManager && !isQa && !isDeveloper) {
-    throw new Error("Not part of this project");
+    throw new AppError("Not part of this project", 403);
   }
 
   if (isDeveloper) {

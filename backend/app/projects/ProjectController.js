@@ -1,52 +1,37 @@
 const ProjectManager = require("./ProjectManager");
+const asyncHandler = require("../../helpers/AsyncHandler");
 
-async function createProject(req, res) {
-  try {
-    const { name } = req.body;
-    const saved = await ProjectManager.createProject({ name, userId: req.userId });
-    res.json(saved);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+const createProject = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  const saved = await ProjectManager.createProject({ name, userId: req.userId });
+  res.json(saved);
+});
 
-async function assignProject(req, res) {
-  try {
-    const { email, user_type } = req.body;
-    const project = await ProjectManager.assignProject({
-      projectId: req.params.projectId,
-      managerId: req.userId,
-      email,
-      user_type,
-    });
-    res.json(project);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+const assignProject = asyncHandler(async (req, res) => {
+  const { email, user_type } = req.body;
+  const project = await ProjectManager.assignProject({
+    projectId: req.params.projectId,
+    managerId: req.userId,
+    email,
+    user_type,
+  });
+  res.json(project);
+});
 
-async function deleteProject(req, res) {
-  try {
-    const del = await ProjectManager.deleteProject({
-      projectId: req.params.projectId,
-      userId: req.userId,
-    });
-    res.json(del);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+const deleteProject = asyncHandler(async (req, res) => {
+  const del = await ProjectManager.deleteProject({
+    projectId: req.params.projectId,
+    userId: req.userId,
+  });
+  res.json(del);
+});
 
-async function getProjects(req, res) {
-  try {
-    const projects = await ProjectManager.getProjects({
-      userId: req.userId,
-      userType: req.user_type,
-    });
-    res.json(projects);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+const getProjects = asyncHandler(async (req, res) => {
+  const projects = await ProjectManager.getProjects({
+    userId: req.userId,
+    userType: req.user_type,
+  });
+  res.json(projects);
+});
 
 module.exports = { createProject, assignProject, deleteProject, getProjects };

@@ -1,6 +1,7 @@
 const { SendMail } = require("../../utils/mail");
 const User = require("../../models/user");
 const Project = require("../../models/project");
+const AppError = require("../../helpers/AppError");
 
 async function createProject({ name, userId }) {
   const newProject = new Project({
@@ -14,20 +15,20 @@ async function createProject({ name, userId }) {
 async function assignProject({ projectId, managerId, email, user_type }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new Error("project not found");
+    throw new AppError("project not found", 404);
   }
 
   if (project.creater.toString() !== managerId) {
-    throw new Error("manger id failed to match");
+    throw new AppError("manger id failed to match", 403);
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error("No such qa or developer found");
+    throw new AppError("No such qa or developer found", 404);
   }
 
   if (user.user_type !== user_type) {
-    throw new Error("The role has not matched to email.");
+    throw new AppError("The role has not matched to email.", 403);
   }
 
   const isQa = user.user_type === "qa";
@@ -35,7 +36,7 @@ async function assignProject({ projectId, managerId, email, user_type }) {
   const alreadyAssigned = targetList.some((id) => id.toString() === user._id.toString());
 
   if (alreadyAssigned) {
-    throw new Error("Already");
+    throw new AppError("Already", 409);
   }
 
   if (isQa) {
@@ -55,11 +56,11 @@ async function assignProject({ projectId, managerId, email, user_type }) {
 async function deleteProject({ projectId, userId }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new Error("Project not found");
+    throw new AppError("Project not found", 404);
   }
 
   if (project.creater.toString() !== userId) {
-    throw new Error("Project not associated to this manger");
+    throw new AppError("Project not associated to this manger", 403);
   }
 
   return Project.deleteOne({ _id: projectId });

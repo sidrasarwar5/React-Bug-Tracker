@@ -5,7 +5,7 @@ const BugSchema = new mongoose.Schema({
     desc : {type: String },
     deadline: {
   type: Date,
-  required: true,
+  required: [true, "Deadline is required"],
   validate: {
     validator: function (value) {
       return value > new Date();
