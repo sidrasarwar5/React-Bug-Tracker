@@ -118,6 +118,7 @@ const { user } = useAuth();
                 {new Date(bug.deadline).toLocaleDateString() || "No deadline"}
               </p>
             </div>
+            {(user.user_type === "qa" ||user.user_type === "manager") &&   (
             <div>
   <p className="text-sm font-semibold text-slate-500">Assigned Developer</p>
   <p className="mt-1 text-slate-800">
@@ -126,7 +127,7 @@ const { user } = useAuth();
       : "Not assigned"}
   </p>
 </div>
-
+            )}
             <div>
               <p className="text-sm font-semibold text-slate-500">
                 Time Passed
