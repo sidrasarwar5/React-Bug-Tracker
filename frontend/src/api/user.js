@@ -1,11 +1,12 @@
 import api from "./axios";
 
-export async function signupUser(name, email, password, user_type) {
+export async function signupUser(name, email, password, user_type, phone) {
   const response = await api.post("/auth/signup", {
     name,
     email,
     password,
     user_type,
+    phone,
   });
 
   return response.data;

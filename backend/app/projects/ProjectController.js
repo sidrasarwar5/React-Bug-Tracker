@@ -2,8 +2,8 @@ const ProjectManager = require("./ProjectManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
 
 const createProject = asyncHandler(async (req, res) => {
-  const { name } = req.body;
-  const saved = await ProjectManager.createProject({ name, userId: req.userId });
+  const { name , description} = req.body;
+  const saved = await ProjectManager.createProject({ name, description, userId: req.userId });
   res.json(saved);
 });
 

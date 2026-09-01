@@ -1,1 +1,56 @@
+
+/* Google Fonts — Inter for body, Poppins (Semi-bold) for headings */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap");
+
 @import "tailwindcss";
+ 
+@theme {
+  /* Brand colors */
+  --color-primary: #007DFA;
+  --color-primary-hover: #0066CC;
+  --color-accent: #F8C51B;
+  --color-accent-hover: #D9AC15;
+
+  /* Neutrals */
+  --color-gray-900: #252C32;
+  --color-gray-800: #373E44;
+  --color-gray-500: #787878;
+  --color-gray-400: #989B9E;
+  --color-gray-200: #DDE2E4;
+
+  /* Status colors (Bug list: Pending / In progress / Closed) */
+  --color-status-pending: #F04438;
+  --color-status-progress: #007DFA;
+  --color-status-closed: #12B76A;
+
+  /* Fonts */
+  --font-sans: "Inter", sans-serif;      /* body text */
+  --font-heading: "Poppins", sans-serif; /* H1 / H2 only */
+
+  /* Type scale */
+  --text-h1: 32px;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: 24px;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 600;
+
+  --text-body1: 18px;
+  --text-body1--letter-spacing: -0.02em;
+
+  --text-body2: 16px;
+  --text-body2--letter-spacing: -0.02em;
+
+  --text-body-small: 14px;
+  --text-body-small--letter-spacing: -0.02em;
+
+  --text-body-xs: 12px;
+  --text-body-xs--letter-spacing: -0.02em;
+}
+
+/* Base body font — everything defaults to Inter unless font-heading is applied */
+body {
+  font-family: var(--font-sans);
+  color: var(--color-gray-900);
+}

@@ -21,10 +21,10 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const data = await loginUser(email, password);
-  
-    const { token: newToken, userId, email: userEmail, user_type } = data.data;
 
-    const userObj = { userId, email: userEmail, user_type };
+    const { token: newToken, userId, name, email: userEmail, user_type } = data.data;
+
+    const userObj = { userId, name, email: userEmail, user_type };
 
     setToken(newToken);
     setUser(userObj);
@@ -34,16 +34,17 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const signup = async (name, email, password, user_type) => {
-    const data = await signupUser(name, email, password, user_type);
+  const signup = async (name, email, password, user_type, phone) => {
+    const data = await signupUser(name, email, password, user_type, phone);
     const {
       token: newToken,
       userId,
+      name: userName,
       email: userEmail,
       user_type: role,
     } = data.data;
 
-    const userObj = { userId, email: userEmail, user_type: role };
+    const userObj = { userId, name: userName, email: userEmail, user_type: role };
 
     setToken(newToken);
     setUser(userObj);
@@ -53,13 +54,19 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup }}>
+    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 }
-
 
 export function useAuth() {
   const context = useContext(AuthContext);

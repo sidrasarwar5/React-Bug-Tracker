@@ -5,8 +5,8 @@ export async function getProjects() {
   return response.data;
 }
 
-export async function createProject(name) {
-  const response = await api.post("/projects", { name });
+export async function createProject(name ,  description) {
+  const response = await api.post("/projects", { name ,  description });
   return response.data;
 }
 

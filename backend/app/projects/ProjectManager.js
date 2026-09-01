@@ -3,9 +3,10 @@ const User = require("../../models/user");
 const Project = require("../../models/project");
 const AppError = require("../../helpers/AppError");
 
-async function createProject({ name, userId }) {
+async function createProject({ name, userId ,  description }) {
   const newProject = new Project({
     name,
+     description,
     creater: userId,
   });
 

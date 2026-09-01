@@ -2,8 +2,8 @@ const AuthManager = require("./AuthManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
 
 const signup = asyncHandler(async (req, res) => {
-  const { name, email, password, user_type } = req.body;
-  const data = await AuthManager.signup({ name, email, password, user_type });
+  const { name, email, password, user_type, phone } = req.body;
+  const data = await AuthManager.signup({ name, email, password, user_type, phone });
 
   res.status(200).json({ success: true, data });
 });

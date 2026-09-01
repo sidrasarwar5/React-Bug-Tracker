@@ -5,6 +5,10 @@ const User = require('../models/user')
 const ProjectSchema = new mongoose.Schema({
     name : {type : String , required : true},
     creater : {type: mongoose.Schema.Types.ObjectId , ref : 'User' , required : true},
+    description: {
+  type: String,
+  default: "",
+},
     assignedqas:[
         {type: mongoose.Schema.Types.ObjectId ,
         ref : 'User' , required : true

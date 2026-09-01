@@ -1,187 +1,141 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/auth';
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Mail, Lock, User, Phone, ChevronRight } from "lucide-react";
+import { useAuth } from "../context/auth";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import AuthSwitchLink from "../components/auth/AuthSwitchLink";
 
 export default function SignupPage() {
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { signup } = useAuth();
 
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    user_type: 'qa',
-    password: ''
+    name: "",
+    email: "",
+    phone: "",
+    user_type: location.state?.user_type || "qa",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  function updateField(field) {
+    return (e) => setForm({ ...form, [field]: e.target.value });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    if (!form.name.trim()) {
-      setError('Full name is required');
-      return;
-    }
-
-    if (!form.email.trim()) {
-      setError('Email is required');
-      return;
-    }
-
-    
-
-    if (!form.password.trim()) {
-      setError('Password is required');
-      return;
-    }
-
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    if (!form.name.trim()) return setError("Full name is required");
+    if (!form.email.trim()) return setError("Email is required");
+    if (!form.password.trim()) return setError("Password is required");
+    if (form.password.length < 6)
+      return setError("Password must be at least 6 characters");
+    if (form.password !== form.confirmPassword)
+      return setError("Passwords do not match");
 
     try {
       setSubmitting(true);
-
       const data = await signup(
         form.name.trim(),
         form.email.trim().toLowerCase(),
         form.password,
-        form.user_type
+        form.user_type,
+        form.phone.trim() || null,
       );
       const userType = data.data.user_type;
 
-      if (userType === 'qa') navigate('/qa');
-      else if (userType === 'manager') navigate('/manager');
-      else navigate('/developer');
+      if (userType === "qa") navigate("/qa");
+      else if (userType === "manager") navigate("/manager");
+      else navigate("/developer");
     } catch (err) {
-      console.log('signup issue frontend', err);
-      setError(err.response?.data?.error || err.message || 'signup failed');
+      console.log("signup issue frontend", err);
+      setError(err.response?.data?.error || err.message || "signup failed");
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <>
-      <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-4 py-10">
-        <div className="absolute left-0 top-0 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-200/30 blur-3xl" />
+    <div className="flex h-screen overflow-hidden">
+      <div className="relative hidden w-1/2 lg:block">
+  <img
+    src="/img.jpg"
+    alt=""
+    className="h-full w-full object-fill"
+  />
+    <div className="absolute inset-0 bg-black/20" />
+</div>
 
-        <div className="relative mx-auto grid min-h-[85vh] max-w-7xl items-center gap-8 lg:grid-cols-[1.05fr,0.95fr]">
-        
+      <div className="flex w-full items-center justify-center overflow-y-auto px-6 py-6 lg:w-1/2">
+  <div className="w-full max-w-110.75 space-y-7.5">
+          <h2 className="font-heading mb-5 text-h2 text-gray-900">Sign Up</h2>
+          <p className="mb-5 text-body-small text-gray-500">
+            Please fill your information below
+          </p>
 
-          <div className="mx-auto w-full max-w-xl">
-            <div className="rounded-4xl border border-white/70 bg-white/80 p-8 shadow-2xl shadow-slate-200/50 backdrop-blur xl:p-10">
-              <div className="mb-8 text-center">
-             
-                <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-                  Create Your Account
-                </h2>
-                
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Input
+              icon={User}
+              value={form.name}
+              onChange={updateField("name")}
+              placeholder="Name"
+            />
+            <Input
+              icon={Phone}
+              value={form.phone}
+              onChange={updateField("phone")}
+              placeholder="+92 342 418 6063"
+            />
+            <Input
+              icon={Mail}
+              type="email"
+              value={form.email}
+              onChange={updateField("email")}
+              placeholder="E-mail"
+            />
+            <Input
+              icon={Lock}
+              type="password"
+              value={form.password}
+              onChange={updateField("password")}
+              placeholder="Password"
+            />
+            <Input
+              icon={Lock}
+              type="password"
+              value={form.confirmPassword}
+              onChange={updateField("confirmPassword")}
+              placeholder="Confirm Password"
+            />
+
+            {error && (
+              <div className="rounded-lg border border-status-pending bg-red-50 px-4 py-3 text-body-small text-status-pending">
+                {error}
               </div>
+            )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Full Name
-                  </label>
-                  <input
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Enter your full name"
-                  />
-                </div>
+            <Button
+              type="submit"
+              icon={<ChevronRight size={16} />}
+              disabled={submitting}
+            >
+              {submitting ? "Signing up..." : "Sign Up"}
+            </Button>
 
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Email Address
-                  </label>
-                  <input
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="Enter your email"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Role
-                  </label>
-                  <select
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    value={form.user_type}
-                    onChange={(e) => setForm({ ...form, user_type: e.target.value })}
-                  >
-                    <option value="qa">QA</option>
-                    <option value="developer">Developer</option>
-                    <option value="manager">Manager</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                      type={showPassword ? 'text' : 'password'}
-                      value={form.password}
-                      onChange={(e) => setForm({ ...form, password: e.target.value })}
-                      placeholder="Create a strong password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400 hover:text-slate-600"
-                    >
-                      {showPassword ? 'Hide' : 'Show'}
-                    </button>
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500">
-                    Password should be at least 6 characters.
-                  </p>
-                </div>
-
-                {error && (
-                  <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
-                    {error}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="w-full rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
-                  disabled={submitting}
-                >
-                  {submitting ? 'Creating Account...' : 'Create Account'}
-                </button>
-              </form>
-
-              <div className="mt-6 space-y-4">
-             
-            
-
-                <p className="text-center text-sm text-slate-500">
-                  Already have an account?{' '}
-                  <Link
-                    to="/login"
-                    className="font-semibold text-blue-600 hover:text-blue-700"
-                  >
-                    Sign in here
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
+            <AuthSwitchLink
+              prompt="Already have an account?"
+              linkText="Login to your account"
+              to="/login"
+              className="text-center"
+            />
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }
