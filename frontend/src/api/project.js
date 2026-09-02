@@ -5,10 +5,20 @@ export async function getProjects() {
   return response.data;
 }
 
-export async function createProject(name ,  description) {
-  const response = await api.post("/projects", { name ,  description });
+export async function createProject(name, description, logoFile) {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("description", description || "");
+  if (logoFile) {
+    formData.append("logo", logoFile);
+  }
+
+  const response = await api.post("/projects", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 }
+
 
 export async function assignToProject(projectId, email, user_type) {
   const response = await api.patch(`/projects/${projectId}/assign`, {

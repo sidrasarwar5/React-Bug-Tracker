@@ -26,7 +26,7 @@ export default function Input({
           onChange={onChange}
           placeholder=" "
           required={required}
-          className={`peer w-3/4 rounded-lg border bg-gray-100 px-3.5 pt-4 pb-3 text-body-small text-gray-900 outline-none transition-colors duration-200 focus:border-primary focus:bg-white ${
+          className={`peer w-full rounded-lg border bg-gray-100 px-3.5 pt-4 pb-3 text-body-small text-gray-900 outline-none transition-colors duration-200 focus:border-primary focus:bg-white ${
             Icon ? "pl-9" : ""
           } ${error ? "border-red-500" : "border-gray-200"}`} 
           {...props}

@@ -1,5 +1,5 @@
 const express = require("express");
-
+const { uploadLogo } = require("../middleware/uploadLogo");
 const { Authentication, Authorization } = require("../middleware");
 const ProjectController = require("../app/projects/ProjectController");
 
@@ -12,6 +12,7 @@ router.use(Authentication.authenticate);
 router.post(
   PROJECTS_ROUTES_PREFIX,
   Authorization.auth("manager"),
+   uploadLogo.single("logo"),
   ProjectController.createProject
 );
 

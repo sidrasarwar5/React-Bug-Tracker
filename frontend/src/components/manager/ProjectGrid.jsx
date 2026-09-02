@@ -1,11 +1,7 @@
 import ProjectCard from "./ProjectCard";
 
-/**
- * ProjectGrid — owns layout and empty/loading states.
- * ProjectCard stays pure presentation; this is where "what if
- * there are 0 projects" logic lives, kept out of the card itself.
- */
-export default function ProjectGrid({ projects, loading }) {
+
+export default function ProjectGrid({ projects, loading, onDelete, onOpenAssign }) {
   if (loading) {
     return <p className="text-body-small text-gray-500">Loading projects...</p>;
   }
@@ -17,7 +13,12 @@ export default function ProjectGrid({ projects, loading }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {projects.map((project) => (
-        <ProjectCard key={project._id} project={project} />
+        <ProjectCard
+          key={project._id}
+          project={project}
+          onDelete={onDelete}
+          onOpenAssign={onOpenAssign}
+        />
       ))}
     </div>
   );

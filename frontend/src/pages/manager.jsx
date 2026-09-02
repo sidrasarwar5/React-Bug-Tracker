@@ -4,10 +4,10 @@ import Navbar from "../components/layout/Navbar";
 import PageHeader from "../components/manager/PageHeader";
 import ProjectGrid from "../components/manager/ProjectGrid";
 import AddProjectModal from "../components/manager/AddProjectModal";
+import AssignPeopleModal from "../components/manager/AssignPeopleModal";
 import {
   getProjects,
   createProject,
-  assignToProject,
   deleteProject,
 } from "../api/project";
 
@@ -20,6 +20,10 @@ export default function ManagerPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  
+  const [newlyCreatedProject, setNewlyCreatedProject] = useState(null);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
   const loadProjects = async () => {
     try {
       setLoading(true);
@@ -28,9 +32,7 @@ export default function ManagerPage() {
       const data = await getProjects();
       setProjects(data);
     } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to load projects"
-      );
+      setError(err.response?.data?.error || "Failed to load projects");
     } finally {
       setLoading(false);
     }
@@ -56,33 +58,20 @@ export default function ManagerPage() {
     setSearch(event.target.value);
   };
 
-  const handleCreate = async ({ name, description }) => {
-    try {
-      setError("");
+const handleCreate = async ({ name, description, logoFile }) => {
+  try {
+    setError("");
+    const project = await createProject(name, description, logoFile);
+    await loadProjects();
 
-      await createProject(name, description);
-      await loadProjects();
+    setIsModalOpen(false);
+    setNewlyCreatedProject(project);
+    setIsAssignModalOpen(true);
+  } catch (err) {
+    setError(err.response?.data?.error || "Failed to create project");
+  }
+};
 
-      setIsModalOpen(false);
-    } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to create project"
-      );
-    }
-  };
-
-  const handleAssign = async (projectId, email, role) => {
-    try {
-      setError("");
-
-      await assignToProject(projectId, email, role);
-      await loadProjects();
-    } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to assign user"
-      );
-    }
-  };
 
   const handleDelete = async (projectId) => {
     try {
@@ -91,15 +80,19 @@ export default function ManagerPage() {
       await deleteProject(projectId);
       await loadProjects();
     } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to delete project"
-      );
+      setError(err.response?.data?.error || "Failed to delete project");
     }
+  };
+
+  const handleAssignModalClose = () => {
+    setIsAssignModalOpen(false);
+    setNewlyCreatedProject(null);
+    loadProjects(); 
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar user={user} />
+      <Navbar />
 
       <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
         <PageHeader
@@ -118,18 +111,27 @@ export default function ManagerPage() {
           </div>
         )}
 
-        <ProjectGrid
-          projects={filteredProjects}
-          loading={loading}
-          onAssign={handleAssign}
-          onDelete={handleDelete}
-        />
+      <ProjectGrid
+  projects={filteredProjects}
+  loading={loading}
+  onDelete={handleDelete}
+  onOpenAssign={(project) => {
+    setNewlyCreatedProject(project);
+    setIsAssignModalOpen(true);
+  }}
+/>
       </main>
 
       <AddProjectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreate}
+      />
+
+      <AssignPeopleModal
+        isOpen={isAssignModalOpen}
+        project={newlyCreatedProject}
+        onClose={handleAssignModalClose}
       />
     </div>
   );

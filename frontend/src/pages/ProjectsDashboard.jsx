@@ -5,14 +5,12 @@ import PageHeader from "../components/manager/PageHeader";
 import ProjectGrid from "../components/manager/ProjectGrid";
 import AddProjectModal from "../components/manager/AddProjectModal";
 import AssignPeopleModal from "../components/manager/AssignPeopleModal";
-import {
-  getProjects,
-  createProject,
-  deleteProject,
-} from "../api/project";
+import { getProjects, createProject, deleteProject } from "../api/project";
 
-export default function ManagerPage() {
+
+export default function ProjectsDashboard() {
   const { user } = useAuth();
+  const canManage = user?.user_type === "manager";
 
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
@@ -20,8 +18,9 @@ export default function ManagerPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
-  const [newlyCreatedProject, setNewlyCreatedProject] = useState(null);
+  // Holds the project being assigned to — either just-created (Manager
+  // flow) or an existing one opened via "Assign" on a card.
+  const [activeProject, setActiveProject] = useState(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
   const loadProjects = async () => {
@@ -44,39 +43,31 @@ export default function ManagerPage() {
 
   const filteredProjects = useMemo(() => {
     const query = search.trim().toLowerCase();
-
-    if (!query) {
-      return projects;
-    }
-
-    return projects.filter((project) =>
-      project.name?.toLowerCase().includes(query)
-    );
+    if (!query) return projects;
+    return projects.filter((project) => project.name?.toLowerCase().includes(query));
   }, [projects, search]);
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
 
-const handleCreate = async ({ name, description, logoFile }) => {
-  try {
-    setError("");
-    const project = await createProject(name, description, logoFile);
-    await loadProjects();
+  const handleCreate = async ({ name, description, logoFile }) => {
+    try {
+      setError("");
+      const project = await createProject(name, description, logoFile);
+      await loadProjects();
 
-    setIsModalOpen(false);
-    setNewlyCreatedProject(project);
-    setIsAssignModalOpen(true);
-  } catch (err) {
-    setError(err.response?.data?.error || "Failed to create project");
-  }
-};
-
+      setIsModalOpen(false);
+      setActiveProject(project);
+      setIsAssignModalOpen(true);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to create project");
+    }
+  };
 
   const handleDelete = async (projectId) => {
     try {
       setError("");
-
       await deleteProject(projectId);
       await loadProjects();
     } catch (err) {
@@ -86,8 +77,8 @@ const handleCreate = async ({ name, description, logoFile }) => {
 
   const handleAssignModalClose = () => {
     setIsAssignModalOpen(false);
-    setNewlyCreatedProject(null);
-    loadProjects(); 
+    setActiveProject(null);
+    loadProjects(); // reflect any assignments made while the modal was open
   };
 
   return (
@@ -101,8 +92,8 @@ const handleCreate = async ({ name, description, logoFile }) => {
           searchValue={search}
           onSearchChange={handleSearchChange}
           searchPlaceholder="Search for Projects here"
-          actionLabel="Add New Project"
-          onAction={() => setIsModalOpen(true)}
+          actionLabel={canManage ? "Add New Project" : undefined}
+          onAction={canManage ? () => setIsModalOpen(true) : undefined}
         />
 
         {error && (
@@ -111,28 +102,39 @@ const handleCreate = async ({ name, description, logoFile }) => {
           </div>
         )}
 
-      <ProjectGrid
-  projects={filteredProjects}
-  loading={loading}
-  onDelete={handleDelete}
-  onOpenAssign={(project) => {
-    setNewlyCreatedProject(project);
-    setIsAssignModalOpen(true);
-  }}
-/>
+        <ProjectGrid
+          projects={filteredProjects}
+          loading={loading}
+          // QA/Developer get neither prop — ProjectCard simply won't
+          // render delete/assign controls when these are undefined.
+          onDelete={canManage ? handleDelete : undefined}
+          onOpenAssign={
+            canManage
+              ? (project) => {
+                  setActiveProject(project);
+                  setIsAssignModalOpen(true);
+                }
+              : undefined
+          }
+        />
       </main>
 
-      <AddProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onCreate={handleCreate}
-      />
+      {/* Creation and assignment modals only ever render for managers */}
+      {canManage && (
+        <>
+          <AddProjectModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onCreate={handleCreate}
+          />
 
-      <AssignPeopleModal
-        isOpen={isAssignModalOpen}
-        project={newlyCreatedProject}
-        onClose={handleAssignModalClose}
-      />
+          <AssignPeopleModal
+            isOpen={isAssignModalOpen}
+            project={activeProject}
+            onClose={handleAssignModalClose}
+          />
+        </>
+      )}
     </div>
   );
 }

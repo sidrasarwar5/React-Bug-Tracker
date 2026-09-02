@@ -27,4 +27,9 @@ router.patch(
   BugController.updateStatus
 );
 
+router.delete(
+  `${BUG_ROUTES_PREFIX}/:bugId`,
+  BugController.deleteBug
+);
+
 module.exports = router;

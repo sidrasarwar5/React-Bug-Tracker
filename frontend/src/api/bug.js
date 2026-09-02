@@ -23,3 +23,7 @@ export async function getProjectBugs(projectId) {
 }
 
 
+export async function DeleteBug(projectId, bugId) {
+  const response = await api.delete(`/projects/${projectId}/bug/${bugId}`);
+  return response.data;
+}

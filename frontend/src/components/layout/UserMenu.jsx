@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
+import Avatar from "../ui/Avatar";
 
 export default function UserMenu({ user, items = [] }) {
   const [open, setOpen] = useState(false);
@@ -13,15 +13,10 @@ export default function UserMenu({ user, items = [] }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const initial = user?.name?.[0]?.toUpperCase() || "?";
-  console.log("UserMenu user:", user);
-
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen((v) => !v)} className="flex items-center gap-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-body-small font-semibold text-white">
-          {initial}
-        </span>
+        <Avatar name={user?.name} size="md" />
         <span className="text-body-small font-medium text-gray-800">
           {user?.name}
         </span>

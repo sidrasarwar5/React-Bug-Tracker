@@ -159,7 +159,7 @@ export default function CreateBugPage() {
               onChange={(e) => setAssignToDev(e.target.value)}
             >
               <option value="">Select developer</option>
-              {project.assigneddeveloper?.map((dev) => (
+              {project?.assigneddeveloper.map((dev) => (
                 <option key={dev._id} value={dev.email}>
                   {dev.name} ({dev.email})
                 </option>

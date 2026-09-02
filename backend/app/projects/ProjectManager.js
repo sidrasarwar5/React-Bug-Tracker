@@ -1,12 +1,19 @@
 const { SendMail } = require("../../utils/mail");
 const User = require("../../models/user");
+const Bug = require("../../models/bug");
 const Project = require("../../models/project");
 const AppError = require("../../helpers/AppError");
 
-async function createProject({ name, userId ,  description }) {
+async function createProject({ name, userId, description, logo }) {
+  const existing = await Project.findOne({ name, creater: userId });
+  if (existing) {
+    throw new AppError("You already have a project with this name", 409);
+  }
+
   const newProject = new Project({
     name,
-     description,
+    description,
+    logo,
     creater: userId,
   });
 
@@ -79,10 +86,27 @@ async function getProjects({ userId, userType }) {
     return [];
   }
 
-  return Project.find(filter)
+  const projects = await Project.find(filter)
     .populate("assignedqas", "email name")
     .populate("assigneddeveloper", "email name")
     .populate("creater", "name");
+
+  const projectsWithProgress = await Promise.all(
+    projects.map(async (project) => {
+      const total = await Bug.countDocuments({ projectRef: project._id });
+      const done = await Bug.countDocuments({
+        projectRef: project._id,
+        status: { $in: ["resolved", "completed"] },
+      });
+
+      return {
+        ...project.toObject(),
+        taskProgress: { done, total },
+      };
+    })
+  );
+
+  return projectsWithProgress;
 }
 
 module.exports = { createProject, assignProject, deleteProject, getProjects };

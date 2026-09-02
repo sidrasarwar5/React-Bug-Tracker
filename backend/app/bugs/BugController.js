@@ -1,9 +1,19 @@
 const BugManager = require("./BugManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
+const fs = require("fs/promises");
+const path = require("path");
+
+
 
 const createBug = asyncHandler(async (req, res) => {
   const { title, desc, deadline, type, status, assignToDev } = req.body;
-  const img = req.file ? req.file.filename : null;
+
+  let img = null;
+  if (req.file) {
+    img = `${Date.now()}-${req.file.originalname}`;
+    const filePath = path.join(__dirname, "../../uploads", img);
+    await fs.writeFile(filePath, req.file.buffer);
+  }
 
   const saved = await BugManager.createBug({
     projectId: req.params.projectId,
@@ -19,7 +29,6 @@ const createBug = asyncHandler(async (req, res) => {
 
   res.json(saved);
 });
-
 const updateStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
 
@@ -51,4 +60,13 @@ const getProjectBugs = asyncHandler(async (req, res) => {
   res.json(bugs);
 });
 
-module.exports = { createBug, updateStatus, bugDetail, getProjectBugs };
+const deleteBug = asyncHandler(async (req, res) => {
+  const result = await BugManager.deleteBug({
+    projectId: req.params.projectId,
+    bugId: req.params.bugId,
+    userId: req.userId,
+  });
+  res.json(result);
+});
+
+module.exports = { createBug, updateStatus, bugDetail, getProjectBugs, deleteBug };
