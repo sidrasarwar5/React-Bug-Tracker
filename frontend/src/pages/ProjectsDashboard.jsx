@@ -18,8 +18,7 @@ export default function ProjectsDashboard() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Holds the project being assigned to — either just-created (Manager
-  // flow) or an existing one opened via "Assign" on a card.
+  
   const [activeProject, setActiveProject] = useState(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
@@ -78,7 +77,7 @@ export default function ProjectsDashboard() {
   const handleAssignModalClose = () => {
     setIsAssignModalOpen(false);
     setActiveProject(null);
-    loadProjects(); // reflect any assignments made while the modal was open
+    loadProjects(); 
   };
 
   return (

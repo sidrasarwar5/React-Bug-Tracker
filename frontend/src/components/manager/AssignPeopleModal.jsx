@@ -42,9 +42,7 @@ export default function AssignPeopleModal({ isOpen, onClose, project }) {
 
       setEmail("");
     } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to assign"
-      );
+      setError(err.response?.data?.error || "Failed to assign");
     } finally {
       setSubmitting(false);
     }
@@ -86,7 +84,7 @@ export default function AssignPeopleModal({ isOpen, onClose, project }) {
 
           <Button
             type="button"
-            variant="secondary"
+            variant="primary"
             className="mt-2 w-full"
             onClick={handleAdd}
             disabled={submitting || !email.trim()}
@@ -96,19 +94,17 @@ export default function AssignPeopleModal({ isOpen, onClose, project }) {
         </div>
 
         {assigned.length > 0 && (
-          <div className="space-y-1.5">
+          <div className="custom-scrollbar  max-h-72 space-y-1.5 overflow-y-auto pr-1">
             {assigned.map((person) => (
               <div
                 key={`${person.email}-${person.role}`}
                 className="flex items-center gap-2 rounded-lg bg-status-closed/10 px-3 py-2 text-body-small text-gray-800"
               >
-                <Check size={14} className="text-status-closed" />
+                <Check size={14} className="shrink-0 text-status-closed" />
 
-                {person.email}
+                <span className="min-w-0 break-all">{person.email}</span>
 
-                <span className="text-gray-400">
-                  ({person.role})
-                </span>
+                <span className="shrink-0 text-gray-400">({person.role})</span>
               </div>
             ))}
           </div>
@@ -116,15 +112,10 @@ export default function AssignPeopleModal({ isOpen, onClose, project }) {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <Button
-          variant="secondary"
-          className="flex-1"
-          onClick={handleClose}
-        >
+        <Button variant="secondary" className="flex-1" onClick={handleClose}>
           {assigned.length > 0 ? "Done" : "Skip for now"}
         </Button>
       </div>
     </Modal>
   );
 }
-

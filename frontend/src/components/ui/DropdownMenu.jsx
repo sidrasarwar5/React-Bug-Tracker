@@ -53,7 +53,7 @@ export default function DropdownMenu({ items }) {
 
       {isOpen && (
         <div
-          className="fixed z-[9999] w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+          className="fixed z-9999 w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
           style={{
             top: `${menuPosition.top}px`,
             right: `${menuPosition.right}px`,

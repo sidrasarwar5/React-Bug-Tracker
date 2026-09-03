@@ -90,7 +90,10 @@ async function updateStatus({ projectId, bugId, userId, status }) {
 }
 
 async function bugDetail({ projectId, bugId }) {
-  const bug = await Bug.findById(bugId).populate("assignToDev", "name email");
+  const bug = await Bug.findById(bugId)
+    .populate("assignToDev", "name email")
+    .populate("reporter", "name email");
+
   if (!bug) {
     throw new AppError("Bug not found", 404);
   }

@@ -1,6 +1,6 @@
-// components/ui/ConfirmModal.jsx
 import Modal from "./Modal";
 import Button from "./Button";
+
 
 export default function ConfirmModal({ isOpen, onClose, onConfirm, title, message }) {
   return (
@@ -15,7 +15,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
         >
           Delete
         </Button>
-        <Button variant="outline" className="flex-1" onClick={onClose}>
+        <Button variant="primary" className="flex-1" onClick={onClose}>
           Cancel
         </Button>
       </div>
