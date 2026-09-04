@@ -3,9 +3,8 @@ const asyncHandler = require("../../helpers/AsyncHandler");
 const fs = require("fs/promises");
 const path = require("path");
 
-
-
 const createBug = asyncHandler(async (req, res) => {
+  // console.log(req.body)
   const { title, desc, deadline, type, status, assignToDev } = req.body;
 
   let img = null;
@@ -69,4 +68,10 @@ const deleteBug = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-module.exports = { createBug, updateStatus, bugDetail, getProjectBugs, deleteBug };
+module.exports = {
+  createBug,
+  updateStatus,
+  bugDetail,
+  getProjectBugs,
+  deleteBug,
+};

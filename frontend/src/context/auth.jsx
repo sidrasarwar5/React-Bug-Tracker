@@ -16,53 +16,120 @@ export function AuthProvider({ children }) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
+
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     const data = await loginUser(email, password);
 
-    const { token: newToken, userId, name, email: userEmail, user_type } = data.data;
+    const {
+      token: newToken,
+      userId,
+      name,
+      email: userEmail,
+      user_type,
+      phone,
+      avatarUrl,
+    } = data.data;
 
-    const userObj = { userId, name, email: userEmail, user_type };
+    const userObj = {
+      userId,
+      name,
+      email: userEmail,
+      user_type,
+      phone,
+      avatarUrl,
+    };
 
     setToken(newToken);
     setUser(userObj);
 
     localStorage.setItem("token", newToken);
     localStorage.setItem("user", JSON.stringify(userObj));
+
     return data;
   };
 
-  const signup = async (name, email, password, user_type, phone) => {
-    const data = await signupUser(name, email, password, user_type, phone);
+  const signup = async (
+    name,
+    email,
+    password,
+    user_type,
+    phone
+  ) => {
+    const data = await signupUser(
+      name,
+      email,
+      password,
+      user_type,
+      phone
+    );
+
     const {
       token: newToken,
       userId,
       name: userName,
       email: userEmail,
       user_type: role,
+      phone: userPhone,
+      avatarUrl,
     } = data.data;
 
-    const userObj = { userId, name: userName, email: userEmail, user_type: role };
+    const userObj = {
+      userId,
+      name: userName,
+      email: userEmail,
+      user_type: role,
+      phone: userPhone,
+      avatarUrl,
+    };
 
     setToken(newToken);
     setUser(userObj);
 
     localStorage.setItem("token", newToken);
     localStorage.setItem("user", JSON.stringify(userObj));
+
     return data;
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
+
     localStorage.removeItem("token");
     localStorage.removeItem("user");
   };
 
+  const updateUser = (updates) => {
+    setUser((prev) => {
+      const merged = {
+        ...prev,
+        ...updates,
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(merged)
+      );
+
+      return merged;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        signup,
+        logout,
+        updateUser,
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );
@@ -70,8 +137,12 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
+
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error(
+      "useAuth must be used within an AuthProvider"
+    );
   }
+
   return context;
 }

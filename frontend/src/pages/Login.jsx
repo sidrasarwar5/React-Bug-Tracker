@@ -46,15 +46,10 @@ export default function LoginPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-       <div className="relative hidden w-1/2 lg:block">
-  <img
-    src="/img.jpg"
-    alt=""
-    className="h-full w-full object-fill"
-  />
-    <div className="absolute inset-0 bg-black/20" />
-
-</div>
+      <div className="relative hidden w-1/2 lg:block">
+        <img src="/img.jpg" alt="" className="h-full w-full object-fill" />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
 
       <div className="flex w-full items-center justify-center overflow-y-auto px-6 py-10 lg:w-1/2">
         <div className="w-full max-w-110.75 space-y-7.5">
@@ -74,6 +69,7 @@ export default function LoginPage() {
             <Input
               icon={Lock}
               type="password"
+              isPassword
               value={form.password}
               onChange={updateField("password")}
               placeholder="Password"

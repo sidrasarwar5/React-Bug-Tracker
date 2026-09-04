@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/auth";
-import Card from "../components/ui/Card";
-import Avatar from "../components/ui/Avatar";
 import { getProjectBugs, UpdateStatus, DeleteBug } from "../api/bug";
 import { getProjects } from "../api/project";
 import Navbar from "../components/layout/Navbar";
-import PageHeader from "../components/manager/PageHeader";
+import PageHeader from "../components/project/PageHeader";
 import BugsToolbar from "../components/bugs/BugsToolbar";
 import BugGrid from "../components/bugs/BugGrid";
 import BugTable from "../components/bugs/BugTable";
@@ -25,6 +23,9 @@ export default function ProjectBugsPage() {
   const [view, setView] = useState("grid");
   const [search, setSearch] = useState("");
   const [assignedTo, setAssignedTo] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [reportedFilter, setReportedFilter] = useState("all");
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   const [bugToDelete, setBugToDelete] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -62,14 +63,40 @@ export default function ProjectBugsPage() {
 
   const filteredBugs = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return bugs.filter((bug) => {
+
+    const result = bugs.filter((bug) => {
       const matchesSearch = !query || bug.title?.toLowerCase().includes(query);
       const matchesAssignee =
         assignedTo === "all" ||
         (bug.assignToDev || []).some((dev) => dev._id === assignedTo);
-      return matchesSearch && matchesAssignee;
+      const matchesStatus =
+        statusFilter === "all" ||
+        bug.status === statusFilter ||
+        (statusFilter === "resolved" && bug.status === "completed");
+      const matchesReporter =
+        reportedFilter === "all" ||
+        (bug.reporter?._id || bug.reporter) === user?.userId;
+      return (
+        matchesSearch && matchesAssignee && matchesStatus && matchesReporter
+      );
     });
-  }, [bugs, search, assignedTo]);
+
+    const sorted = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "oldest":
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case "dueDate":
+          return new Date(a.deadline || 0) - new Date(b.deadline || 0);
+        case "title":
+          return (a.title || "").localeCompare(b.title || "");
+        case "newest":
+        default:
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+
+    return sorted;
+  }, [bugs, search, assignedTo, statusFilter, reportedFilter, sortBy, user]);
 
   const assignedToOptions = useMemo(() => {
     const uniqueDevs = new Map();
@@ -149,48 +176,10 @@ export default function ProjectBugsPage() {
         />
 
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-3 text-body-small text-status-pending">
+          <div className="mb-6 rounded-lg bg-status-pending/10 p-3 text-body-small text-status-pending">
             {error}
           </div>
         )}
-
-        {/* <Card className="mb-6">
-  <h2 className="mb-3 text-body2 font-semibold text-gray-900">Project Team</h2>
-
-  <div className="grid gap-4 sm:grid-cols-2">
-    <div>
-      <p className="mb-2 text-body-small font-semibold text-gray-500">QAs</p>
-      <div className="space-y-2">
-        {project?.assignedqas?.length > 0 ? (
-          project.assignedqas.map((qa) => (
-            <div key={qa._id} className="flex items-center gap-2">
-              <Avatar name={qa.name} size="sm" />
-              <span className="text-body-small text-gray-900">{qa.name} ({qa.email})</span>
-            </div>
-          ))
-        ) : (
-          <span className="text-body-small text-gray-400">None assigned</span>
-        )}
-      </div>
-    </div>
-
-    <div>
-      <p className="mb-2 text-body-small font-semibold text-gray-500">Developers</p>
-      <div className="space-y-2">
-        {project?.assigneddeveloper?.length > 0 ? (
-          project.assigneddeveloper.map((dev) => (
-            <div key={dev._id} className="flex items-center gap-2">
-              <Avatar name={dev.name} size="sm" />
-              <span className="text-body-small text-gray-900">{dev.name} ({dev.email})</span>
-            </div>
-          ))
-        ) : (
-          <span className="text-body-small text-gray-400">None assigned</span>
-        )}
-      </div>
-    </div>
-  </div>
-</Card> */}
 
         <BugsToolbar
           searchValue={search}
@@ -198,6 +187,13 @@ export default function ProjectBugsPage() {
           assignedToValue={assignedTo}
           onAssignedToChange={(e) => setAssignedTo(e.target.value)}
           assignedToOptions={assignedToOptions}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+          reportedFilter={reportedFilter}
+          onReportedFilterChange={setReportedFilter}
+          showReportedFilter={user?.user_type === "qa"}
           view={view}
           onViewChange={setView}
         />

@@ -50,7 +50,7 @@ export default function MultiSelectDropdown({
       </button>
 
       {isOpen && (
-        <div className=" custom-scrollbar absolute left-0 top-full z-10 mt-1 max-h-72 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+        <div className="custom-scrollbar absolute left-0 top-full z-10 mt-1 max-h-72 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
           {options.map((user) => (
             <label
               key={user._id}
@@ -63,7 +63,7 @@ export default function MultiSelectDropdown({
                 className="rounded border-gray-300 text-primary focus:ring-primary"
               />
 
-              <Avatar name={user.name} size="sm" />
+              <Avatar name={user.name} src={user.avatarUrl} size="sm" />
 
               <span className="min-w-0 truncate">{user.name}</span>
             </label>

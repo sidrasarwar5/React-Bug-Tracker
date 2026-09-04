@@ -6,6 +6,7 @@ const uploadLogo = multer({
     fileSize: 2 * 1024 * 1024, // 2MB for project logos
   },
   fileFilter: function (req, file, cb) {
+      console.log("Received mimetype:", file.mimetype);
     const allowedTypes = ["image/png", "image/jpeg", "image/gif"];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);

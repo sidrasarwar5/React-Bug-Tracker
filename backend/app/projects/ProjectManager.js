@@ -87,8 +87,8 @@ async function getProjects({ userId, userType }) {
   }
 
   const projects = await Project.find(filter)
-    .populate("assignedqas", "email name")
-    .populate("assigneddeveloper", "email name")
+    .populate("assignedqas", "email name avatarUrl")
+    .populate("assigneddeveloper", "email name avatarUrl")
     .populate("creater", "name");
 
   const projectsWithProgress = await Promise.all(

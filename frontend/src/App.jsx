@@ -7,6 +7,7 @@ import ProjectBugsPage from "./pages/ProjectBugs";
 import UpdatestatusPage from "./pages/BugDetail";
 import AccountTypePage from "./pages/AccountTypePage";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
+import ProfilePage from "./pages/Profilepage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/manager" element={<ProjectsDashboard />} />
           <Route path="/qa" element={<ProjectsDashboard />} />
           <Route path="/developer" element={<ProjectsDashboard />} />

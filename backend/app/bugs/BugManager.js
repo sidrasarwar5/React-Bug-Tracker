@@ -4,13 +4,26 @@ const Project = require("../../models/project");
 const Bug = require("../../models/bug");
 const AppError = require("../../helpers/AppError");
 
-async function createBug({ projectId, userId, title, desc, deadline, type, status, assignToDev, img }) {
+async function createBug({
+  projectId,
+  userId,
+  title,
+  desc,
+  deadline,
+  type,
+  status,
+  assignToDev,
+  img,
+}) {
+  
   const project = await Project.findById(projectId);
   if (!project) {
     throw new AppError("project not found", 404);
   }
 
-  const isAssignedQa = project.assignedqas.some((id) => id.toString() === userId);
+  const isAssignedQa = project.assignedqas.some(
+    (id) => id.toString() === userId,
+  );
   if (!isAssignedQa) {
     throw new AppError("Qa is not assigned", 403);
   }
@@ -24,9 +37,14 @@ async function createBug({ projectId, userId, title, desc, deadline, type, statu
   }
 
   const assignedDevIds = project.assigneddeveloper.map((id) => id.toString());
-  const allVerified = devUsers.every((dev) => assignedDevIds.includes(dev._id.toString()));
+  const allVerified = devUsers.every((dev) =>
+    assignedDevIds.includes(dev._id.toString()),
+  );
   if (!allVerified) {
-    throw new AppError("One or more developers not assigned to this project", 403);
+    throw new AppError(
+      "One or more developers not assigned to this project",
+      403,
+    );
   }
 
   const existingTitle = await Bug.findOne({ title, projectRef: projectId });
@@ -91,8 +109,8 @@ async function updateStatus({ projectId, bugId, userId, status }) {
 
 async function bugDetail({ projectId, bugId }) {
   const bug = await Bug.findById(bugId)
-    .populate("assignToDev", "name email")
-    .populate("reporter", "name email");
+    .populate("assignToDev", "name email avatarUrl")
+    .populate("reporter", "name email avatarUrl");
 
   if (!bug) {
     throw new AppError("Bug not found", 404);
@@ -108,7 +126,6 @@ async function bugDetail({ projectId, bugId }) {
     stale: bug.stale(),
   };
 }
-
 async function getProjectBugs({ projectId, userId }) {
   const project = await Project.findById(projectId);
   if (!project) {
@@ -117,7 +134,9 @@ async function getProjectBugs({ projectId, userId }) {
 
   const isManager = project.creater.toString() === userId;
   const isQa = project.assignedqas.some((id) => id.toString() === userId);
-  const isDeveloper = project.assigneddeveloper.some((id) => id.toString() === userId);
+  const isDeveloper = project.assigneddeveloper.some(
+    (id) => id.toString() === userId,
+  );
 
   if (!isManager && !isQa && !isDeveloper) {
     throw new AppError("Not part of this project", 403);
@@ -128,11 +147,10 @@ async function getProjectBugs({ projectId, userId }) {
     : { projectRef: projectId };
 
   return Bug.find(query)
-    .populate("assignToDev", "name email")
-    .populate("reporter", "name email")
+    .populate("assignToDev", "name email avatarUrl")
+    .populate("reporter", "name email avatarUrl")
     .sort({ createdAt: -1 });
 }
-
 async function deleteBug({ projectId, bugId, userId }) {
   const project = await Project.findById(projectId);
   if (!project) {
@@ -159,5 +177,10 @@ async function deleteBug({ projectId, bugId, userId }) {
   return { message: "Bug deleted successfully" };
 }
 
-module.exports = { createBug, updateStatus, bugDetail, getProjectBugs, deleteBug };
-
+module.exports = {
+  createBug,
+  updateStatus,
+  bugDetail,
+  getProjectBugs,
+  deleteBug,
+};

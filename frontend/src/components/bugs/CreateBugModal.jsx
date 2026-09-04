@@ -45,7 +45,7 @@ export default function CreateBugModal({ isOpen, onClose, projectId, developers,
       const selectedDevs = developers.filter((dev) =>
         assignedDevIds.includes(dev._id),
       );
-      selectedDevs.forEach((dev) => formData.append("assignToDev[]", dev.email));
+      selectedDevs.forEach((dev) => formData.append("assignToDev", dev.email));
 
       if (file) formData.append("img", file);
 

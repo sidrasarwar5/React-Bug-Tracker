@@ -63,16 +63,12 @@ export default function SignupPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <div className="relative hidden w-1/2 lg:block">
-  <img
-    src="/img.jpg"
-    alt=""
-    className="h-full w-full object-fill"
-  />
-    <div className="absolute inset-0 bg-black/20" />
-</div>
+        <img src="/img.jpg" alt="" className="h-full w-full object-fill" />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
 
       <div className="flex w-full items-center justify-center overflow-y-auto px-6 py-6 lg:w-1/2">
-  <div className="w-full max-w-110.75 space-y-7.5">
+        <div className="w-full max-w-110.75 space-y-7.5">
           <h2 className="font-heading mb-5 text-h2 text-gray-900">Sign Up</h2>
           <p className="mb-5 text-body-small text-gray-500">
             Please fill your information below
@@ -101,6 +97,7 @@ export default function SignupPage() {
             <Input
               icon={Lock}
               type="password"
+              isPassword
               value={form.password}
               onChange={updateField("password")}
               placeholder="Password"

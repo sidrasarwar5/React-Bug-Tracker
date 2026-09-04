@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/auth";
 import Navbar from "../components/layout/Navbar";
-import PageHeader from "../components/manager/PageHeader";
-import ProjectGrid from "../components/manager/ProjectGrid";
-import AddProjectModal from "../components/manager/AddProjectModal";
-import AssignPeopleModal from "../components/manager/AssignPeopleModal";
+import PageHeader from "../components/project/PageHeader";
+import ProjectGrid from "../components/project/ProjectGrid";
+import AddProjectModal from "../components/project/AddProjectModal";
+import AssignPeopleModal from "../components/project/AssignPeopleModal";
 import { getProjects, createProject, deleteProject } from "../api/project";
 
 

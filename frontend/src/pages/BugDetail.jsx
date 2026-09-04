@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BugDetail, UpdateStatus } from "../api/bug";
 import { useAuth } from "../context/auth";
+import { API_BASE_URL } from "../api/axios";
 import Navbar from "../components/layout/Navbar";
-import PageHeader from "../components/manager/PageHeader";
+import PageHeader from "../components/project/PageHeader";
 import Card from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 import Select from "../components/ui/Select";
@@ -52,7 +53,7 @@ export default function BugDetailPage() {
 
       const data = await UpdateStatus(projectId, bugId, status);
 
-      setBug(data);
+      setBug((prev) => ({ ...prev, status: data.status }));
       setStatus(data.status);
       setMessage(`Status updated to "${data.status}"`);
     } catch (err) {
@@ -150,28 +151,31 @@ export default function BugDetailPage() {
               </p>
             </div>
 
+            <div>
+              <p className="text-body-small font-semibold text-gray-500">
+                Reported By
+              </p>
 
-         <div>
-  <p className="text-body-small font-semibold text-gray-500">
-    Assigned QA
-  </p>
+              <div className="mt-2">
+                {bug.reporter ? (
+                  <div className="flex items-center gap-2">
+                    <Avatar
+                      name={bug.reporter.name}
+                      src={bug.reporter.avatarUrl}
+                      size="sm"
+                    />
 
-  <div className="mt-2">
-    {bug.reporter ? (
-      <div className="flex items-center gap-2">
-        <Avatar name={bug.reporter.name} size="sm" />
-
-        <span className="text-body2 text-gray-900">
-          {bug.reporter.name} ({bug.reporter.email})
-        </span>
-      </div>
-    ) : (
-      <span className="text-body-small text-gray-400">
-        Not assigned
-      </span>
-    )}
-  </div>
-</div>
+                    <span className="text-body2 text-gray-900">
+                      {bug.reporter.name} ({bug.reporter.email})
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-body-small text-gray-400">
+                    Not assigned
+                  </span>
+                )}
+              </div>
+            </div>
 
             <div>
               <p className="text-body-small font-semibold text-gray-500">
@@ -181,7 +185,7 @@ export default function BugDetailPage() {
                 {assignedDevs.length > 0 ? (
                   assignedDevs.map((dev) => (
                     <div key={dev._id} className="flex items-center gap-2">
-                      <Avatar name={dev.name} size="sm" />
+                      <Avatar name={dev.name} src={dev.avatarUrl} size="sm" />
                       <span className="text-body2 text-gray-900">
                         {dev.name} ({dev.email})
                       </span>
@@ -215,7 +219,7 @@ export default function BugDetailPage() {
 
             {bug.img ? (
               <img
-                src={`http://localhost:3000/uploads/${bug.img}`}
+                src={`${API_BASE_URL}/uploads/${bug.img}`}
                 alt={bug.title}
                 className="mt-2 max-h-96 rounded-xl border border-gray-200"
               />

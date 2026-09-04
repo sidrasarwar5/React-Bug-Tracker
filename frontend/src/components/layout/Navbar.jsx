@@ -3,9 +3,17 @@ import { Bug, LogOut } from "lucide-react";
 import { useAuth } from "../../context/auth";
 import UserMenu from "./UserMenu";
 
-export default function Navbar({ userMenuItems = [] }) {
+const DASHBOARD_ROUTES = {
+  manager: "/manager",
+  qa: "/qa",
+  developer: "/developer",
+};
+
+export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const dashboardPath = DASHBOARD_ROUTES[user?.user_type] || "/login";
 
   function handleLogout() {
     logout();
@@ -16,8 +24,7 @@ export default function Navbar({ userMenuItems = [] }) {
     <nav className="bg-white">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3">
-
-          <NavLink to="/" className="flex items-center gap-2">
+          <NavLink to={dashboardPath} className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
               <Bug size={18} />
             </span>
@@ -36,9 +43,8 @@ export default function Navbar({ userMenuItems = [] }) {
               Logout
             </button>
 
-            {user && <UserMenu user={user} items={userMenuItems} />}
+            {user && <UserMenu user={user} />}
           </div>
-
         </div>
       </div>
     </nav>
