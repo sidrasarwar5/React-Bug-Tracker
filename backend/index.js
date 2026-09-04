@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const dotenv = require("dotenv");
 const mongoDb = require("./config/db");
 const cors = require("cors");
@@ -40,6 +40,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ error: err.message || "Something went wrong" });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
 });
