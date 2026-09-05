@@ -28,50 +28,52 @@ export default function BugTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-      <table className="w-full text-left">
-        <thead className="border-b border-gray-200 bg-gray-100">
-          <tr className="text-body-xs font-semibold uppercase tracking-wide text-gray-500">
-            <th className="px-4 py-3">Bug Details</th>
-            <th className="px-4 py-3">Status</th>
-            <th className="px-4 py-3">Due Date</th>
-            <th className="px-4 py-3">Assigned To</th>
-            <th className="px-4 py-3">Action</th>
-          </tr>
-        </thead>
+    <div className="rounded-2xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-left">
+          <thead className="border-b border-gray-200 bg-gray-100">
+            <tr className="text-body-xs font-semibold uppercase tracking-wide text-gray-500">
+              <th className="px-4 py-3">Bug Details</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Due Date</th>
+              <th className="px-4 py-3">Assigned To</th>
+              <th className="px-4 py-3">Action</th>
+            </tr>
+          </thead>
 
-        <tbody className="divide-y divide-gray-100">
-          {bugs.map((bug) => {
-            const menuItems = buildBugMenuItems(bug, {
-              onStatusChange,
-              onDelete,
-              canChangeStatus: canChangeStatus(bug),
-              canDelete: canDelete(bug),
-            });
+          <tbody className="divide-y divide-gray-100">
+            {bugs.map((bug) => {
+              const menuItems = buildBugMenuItems(bug, {
+                onStatusChange,
+                onDelete,
+                canChangeStatus: canChangeStatus(bug),
+                canDelete: canDelete(bug),
+              });
 
-            return (
-              <tr
-                key={bug._id}
-                className="cursor-pointer text-body-small hover:bg-gray-50"
-                onClick={() => onViewDetails(bug._id)}
-              >
-                <td className="px-4 py-3 text-gray-900">{bug.title}</td>
-                <td className="px-4 py-3"><Badge status={bug.status} /></td>
-                <td className="px-4 py-3 text-gray-500">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar size={14} />
-                    {formatDate(bug.deadline)}
-                  </span>
-                </td>
-                <td className="px-4 py-3"><AvatarGroup users={bug.assignToDev} /></td>
-                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                  {menuItems.length > 0 && <DropdownMenu items={menuItems} />}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr
+                  key={bug._id}
+                  className="cursor-pointer text-body-small hover:bg-gray-50"
+                  onClick={() => onViewDetails(bug._id)}
+                >
+                  <td className="px-4 py-3 text-gray-900">{bug.title}</td>
+                  <td className="px-4 py-3"><Badge status={bug.status} /></td>
+                  <td className="px-4 py-3 text-gray-500">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar size={14} />
+                      {formatDate(bug.deadline)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3"><AvatarGroup users={bug.assignToDev} /></td>
+                  <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                    {menuItems.length > 0 && <DropdownMenu items={menuItems} />}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

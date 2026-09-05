@@ -105,6 +105,7 @@ export default function SignupPage() {
             <Input
               icon={Lock}
               type="password"
+              isPassword
               value={form.confirmPassword}
               onChange={updateField("confirmPassword")}
               placeholder="Confirm Password"

@@ -65,7 +65,6 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="border-t border-gray-100 py-3 sm:hidden">
             <div className="flex flex-col gap-3">
-              =
               {user && (
                 <div className="px-1">
                   <UserMenu user={user} />
