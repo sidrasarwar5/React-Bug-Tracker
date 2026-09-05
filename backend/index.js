@@ -8,7 +8,11 @@ const path = require("path");
 
 dotenv.config();
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+  origin: "https://react-bug-tracker-virid.vercel.app",
+}));
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const authRouter = require("./routes/auth");
