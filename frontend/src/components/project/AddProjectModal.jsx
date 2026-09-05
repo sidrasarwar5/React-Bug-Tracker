@@ -4,13 +4,13 @@ import Modal from "../ui/Modal";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
-
 export default function AddProjectModal({ isOpen, onClose, onCreate }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
 
   function resetForm() {
@@ -27,10 +27,16 @@ export default function AddProjectModal({ isOpen, onClose, onCreate }) {
     setLogoPreview(URL.createObjectURL(file));
   }
 
-  function handleSubmit() {
-    if (!name.trim()) return;
-    onCreate({ name: name.trim(), description: description.trim(), logoFile });
-    resetForm();
+  async function handleSubmit() {
+    if (!name.trim() || submitting) return;
+
+    try {
+      setSubmitting(true);
+      await onCreate({ name: name.trim(), description: description.trim(), logoFile });
+      resetForm();
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -78,10 +84,10 @@ export default function AddProjectModal({ isOpen, onClose, onCreate }) {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <Button className="flex-1" onClick={handleSubmit}>
-          Add
+        <Button className="flex-1" onClick={handleSubmit} disabled={submitting}>
+          {submitting ? "Adding..." : "Add"}
         </Button>
-        <Button variant="secondary" className="flex-1" onClick={onClose}>
+        <Button variant="secondary" className="flex-1" onClick={onClose} disabled={submitting}>
           Cancel
         </Button>
       </div>
