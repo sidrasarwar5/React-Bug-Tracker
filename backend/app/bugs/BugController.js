@@ -1,18 +1,10 @@
 const BugManager = require("./BugManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
-const fs = require("fs/promises");
-const path = require("path");
 
 const createBug = asyncHandler(async (req, res) => {
-  // console.log(req.body)
   const { title, desc, deadline, type, status, assignToDev } = req.body;
 
-  let img = null;
-  if (req.file) {
-    img = `${Date.now()}-${req.file.originalname}`;
-    const filePath = path.join(__dirname, "../../uploads", img);
-    await fs.writeFile(filePath, req.file.buffer);
-  }
+  const img = req.file ? req.file.path : null;
 
   const saved = await BugManager.createBug({
     projectId: req.params.projectId,
@@ -28,6 +20,7 @@ const createBug = asyncHandler(async (req, res) => {
 
   res.json(saved);
 });
+
 const updateStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
 

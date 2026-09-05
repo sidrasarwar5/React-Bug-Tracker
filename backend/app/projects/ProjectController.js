@@ -1,17 +1,10 @@
 const ProjectManager = require("./ProjectManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
-const fs = require("fs/promises");
-const path = require("path");
 
 const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
 
-  let logo = null;
-  if (req.file) {
-    logo = `${Date.now()}-${req.file.originalname}`;
-    const filePath = path.join(__dirname, "../../uploads", logo);
-    await fs.writeFile(filePath, req.file.buffer);
-  }
+  const logo = req.file ? req.file.path : null;
 
   const saved = await ProjectManager.createProject({
     name,

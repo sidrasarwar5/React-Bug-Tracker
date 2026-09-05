@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Folder, Layers, Rocket, Zap, Star, Compass, UserPlus } from "lucide-react";
+import {
+  Folder,
+  Layers,
+  Rocket,
+  Zap,
+  Star,
+  Compass,
+  UserPlus,
+} from "lucide-react";
 import Card from "../ui/Card";
 import DropdownMenu from "../ui/DropdownMenu";
 import ConfirmModal from "../ui/ConfirmModal";
-import { API_BASE_URL } from "../../api/axios";
 
 const DEFAULT_ICONS = [Folder, Layers, Rocket, Zap, Star, Compass];
 
@@ -30,10 +37,8 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
 
   return (
     <Card className="relative transition-shadow hover:shadow-md">
-
       {(onOpenAssign || onDelete) && (
         <div className="absolute right-3 top-3 flex items-center gap-1">
-
           {onOpenAssign && (
             <button
               type="button"
@@ -67,7 +72,7 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
         <span className="mb-4 flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-primary/10 text-primary">
           {hasLogo ? (
             <img
-              src={`${API_BASE_URL}/uploads/${project.logo}`}
+              src={project.logo}
               alt={project.name}
               className="h-full w-full object-cover"
             />

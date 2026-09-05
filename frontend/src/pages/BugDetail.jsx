@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BugDetail, UpdateStatus } from "../api/bug";
 import { useAuth } from "../context/auth";
-import { API_BASE_URL } from "../api/axios";
 import Navbar from "../components/layout/Navbar";
 import PageHeader from "../components/project/PageHeader";
 import Card from "../components/ui/Card";
@@ -219,7 +218,7 @@ export default function BugDetailPage() {
 
             {bug.img ? (
               <img
-                src={`${API_BASE_URL}/uploads/${bug.img}`}
+                src={bug.img}
                 alt={bug.title}
                 className="mt-2 max-h-96 rounded-xl border border-gray-200"
               />

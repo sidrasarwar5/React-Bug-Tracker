@@ -10,10 +10,10 @@ export default function Avatar({ name, src, size = "sm" }) {
   const initial = name?.[0]?.toUpperCase() || "?";
 
   const imageSrc = src
-    ? src.startsWith("http") || src.startsWith("blob:")
-      ? src
-      : `${API_BASE_URL}${src}`
-    : null;
+  ? src.startsWith("http") || src.startsWith("blob:")
+    ? src
+    : `${API_BASE_URL}${src}`
+  : null;
 
   return (
     <span
