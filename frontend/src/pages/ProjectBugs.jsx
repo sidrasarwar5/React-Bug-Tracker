@@ -169,6 +169,8 @@ export default function ProjectBugsPage() {
         <PageHeader
           title="All bugs listing"
           showSearch={false}
+           showBar={false}
+           largeTitle={true}
           actionLabel={user?.user_type === "qa" ? "New Task bug" : undefined}
           onAction={
             user?.user_type === "qa" ? () => setIsBugModalOpen(true) : undefined

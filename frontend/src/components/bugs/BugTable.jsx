@@ -29,15 +29,23 @@ export default function BugTable({
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] text-left">
+      <div className="custom-scrollbar overflow-x-auto lg:overflow-visible">
+        <table className="w-full min-w-[640px] table-fixed text-left lg:min-w-full">
+          <colgroup>
+            <col className="w-80" />
+            <col className="w-24" />
+            <col className="w-24" />
+            <col className="w-28" />
+            <col className="w-16" />
+          </colgroup>
+
           <thead className="border-b border-gray-200 bg-gray-100">
             <tr className="text-body-xs font-semibold uppercase tracking-wide text-gray-500">
-              <th className="px-4 py-3">Bug Details</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Due Date</th>
-              <th className="px-4 py-3">Assigned To</th>
-              <th className="px-4 py-3">Action</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">Bug Details</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">Status</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">Due Date</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">Assigned To</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">Action</th>
             </tr>
           </thead>
 
@@ -56,16 +64,26 @@ export default function BugTable({
                   className="cursor-pointer text-body-small hover:bg-gray-50"
                   onClick={() => onViewDetails(bug._id)}
                 >
-                  <td className="px-4 py-3 text-gray-900">{bug.title}</td>
-                  <td className="px-4 py-3"><Badge status={bug.status} /></td>
-                  <td className="px-4 py-3 text-gray-500">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={14} />
-                      {formatDate(bug.deadline)}
-                    </span>
+                  <td className="max-w-0 truncate px-4 py-3 text-gray-900">
+                    {bug.title}
                   </td>
-                  <td className="px-4 py-3"><AvatarGroup users={bug.assignToDev} /></td>
-                  <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                  <td className="px-4 py-3">
+                    <Badge status={bug.status} />
+                  </td>
+                  <td className="px-4 py-3 text-gray-500">
+                    <Calendar
+                      size={16}
+                      className="shrink-0"
+                      title={formatDate(bug.deadline)}
+                    />
+                  </td>
+                  <td className="overflow-hidden px-4 py-3">
+                    <AvatarGroup users={bug.assignToDev} />
+                  </td>
+                  <td
+                    className="px-4 py-3"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {menuItems.length > 0 && <DropdownMenu items={menuItems} />}
                   </td>
                 </tr>

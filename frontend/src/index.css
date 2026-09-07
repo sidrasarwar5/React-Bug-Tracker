@@ -79,6 +79,7 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -203,4 +204,20 @@ body {
   letter-spacing: 0.02em;
   color: #030303;
   opacity: 1;
+}
+.header-search input {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.heading-label {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 12.36px;
+  line-height: 24.72px;
+  letter-spacing: 0.18px;
+  text-transform: uppercase;
 }
