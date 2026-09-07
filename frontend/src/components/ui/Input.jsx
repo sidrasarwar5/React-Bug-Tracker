@@ -8,6 +8,7 @@ export default function Input({
   onChange,
   placeholder,
   icon: Icon,
+  iconSrc,
   isPassword = false,
   error,
   required = false,
@@ -15,17 +16,28 @@ export default function Input({
   ...props
 }) {
   const [visible, setVisible] = useState(false);
+
   const resolvedType = isPassword ? (visible ? "text" : "password") : type;
 
   return (
-    <div className={`w-full ${className}`}>
-      <div className="relative">
-        {Icon && (
-          <Icon
-            size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-primary"
+    <div className={className || "w-full"}>
+      <div className="relative w-[80%]">
+        {/* SVG ICON */}
+        {iconSrc && (
+          <img
+            src={iconSrc}
+            alt=""
+            className="icon-color not-odd:pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 object-contain"
           />
         )}
+
+        {Icon && !iconSrc && (
+          <Icon
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+        )}
+
         <input
           id={props.id || label}
           type={resolvedType}
@@ -33,20 +45,35 @@ export default function Input({
           onChange={onChange}
           placeholder=" "
           required={required}
-          className={`peer w-full rounded-lg border bg-gray-100 px-3.5 pt-4 pb-1.5 text-body-small text-gray-900 outline-none transition-colors duration-200 focus:border-primary focus:bg-white ${
-            Icon ? "pl-9" : ""
-          } ${isPassword ? "pr-9" : ""} ${error ? "border-red-500" : "border-gray-200"}`}
+          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
+            iconSrc || Icon ? "pl-9" : ""
+          } ${isPassword ? "pr-9" : ""} ${
+            error ? "border-red-500" : "border-transparent"
+          }`}
           {...props}
         />
-        <label
-          htmlFor={props.id || label}
-          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 text-body-small transition-all duration-200
-            peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs peer-focus:text-gray-900 peer-focus:bg-white
-            peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:-translate-y-1/2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-white
-            ${Icon ? "left-9" : "left-3.5"}`}
-        >
-          {placeholder || label}
-        </label>
+
+       <label
+  htmlFor={props.id || label}
+  className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
+    peer-focus:top-0
+    peer-focus:-translate-y-1/2
+    peer-focus:text-[11px]
+    peer-focus:font-normal
+    peer-focus:text-gray-900
+    peer-focus:bg-white
+
+    peer-[:not(:placeholder-shown)]:top-0
+    peer-[:not(:placeholder-shown)]:-translate-y-1/2
+    peer-[:not(:placeholder-shown)]:text-[11px]
+    peer-[:not(:placeholder-shown)]:font-normal
+    peer-[:not(:placeholder-shown)]:bg-white
+
+    ${iconSrc || Icon ? "left-9" : "left-3.5"}
+  `}
+>
+  {placeholder || label}
+</label>
 
         {isPassword && (
           <button
@@ -59,6 +86,7 @@ export default function Input({
           </button>
         )}
       </div>
+
       {error && <p className="mt-1 text-body-xs text-red-500">{error}</p>}
     </div>
   );

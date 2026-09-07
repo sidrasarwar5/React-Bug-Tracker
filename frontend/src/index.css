@@ -1,7 +1,5 @@
 
-/* Google Fonts — Inter for body, Poppins (Semi-bold) for headings */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;600;700&display=swap");
 @import "tailwindcss";
  
 @theme {
@@ -10,6 +8,8 @@
   --color-primary-hover: #0066CC;
   --color-accent: #F8C51B;
   --color-accent-hover: #D9AC15;
+   --color-lightBlue : #80BEFC;
+
 
   /* Neutrals */
   --color-gray-900: #252C32;
@@ -38,15 +38,31 @@
 
   --text-body1: 18px;
   --text-body1--letter-spacing: -0.02em;
+  --text-body1--font-weight: 400;
 
   --text-body2: 16px;
   --text-body2--letter-spacing: -0.02em;
+  --text-body2--font-weight: 400;
+
+  --text-body2-semibold: 16px;
+  --text-body2-semibold--letter-spacing: -0.02em;
+  --text-body2-semibold--font-weight: 600;
 
   --text-body-small: 14px;
   --text-body-small--letter-spacing: -0.02em;
+  --text-body-small--font-weight: 400;
+
+  --text-body-small-medium: 14px;
+  --text-body-small-medium--letter-spacing: -0.02em;
+  --text-body-small-medium--font-weight: 500;
+
+  --text-body-small-semibold: 14px;
+  --text-body-small-semibold--letter-spacing: -0.02em;
+  --text-body-small-semibold--font-weight: 600;
 
   --text-body-xs: 12px;
   --text-body-xs--letter-spacing: -0.02em;
+  --text-body-xs--font-weight: 400;
 }
 
 /* Base body font — everything defaults to Inter unless font-heading is applied */
@@ -76,4 +92,115 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #DDE2E4;
+}
+.icon-color {
+  filter: brightness(0) saturate(100%)
+    invert(59%)
+    sepia(9%)
+    saturate(650%)
+    hue-rotate(190deg)
+    brightness(92%)
+    contrast(90%);
+}
+
+.signup-heading {
+  font-family: "Poppins", sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #2F3367;
+}
+
+.para {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0;
+  color: #8692A6;
+}
+
+.h2 {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: #2F3367;
+}
+
+.description {
+  display: block;
+  margin-top: 4px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  color: #8692A6;
+}
+.auth-switch {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0;
+  color: #8692A6;
+}
+
+.auth-switch-link {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+  color: #007DFA;
+  white-space: nowrap;
+}
+
+/* 
+/* Input field text (what the user types) */
+.input-field {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 100%;
+  letter-spacing: 0%;
+} 
+
+/* Floating label — resting/placeholder state */
+.input-label {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+/* Floating label — active/focused/filled state (smaller, shifted up) */
+.input-label-active {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.logoHeading {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 19.17px;
+  line-height: 100%;
+  letter-spacing: 1%;
+  opacity: 1;
+  color: #030303;
+}
+.logosmHeading {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 100;
+  font-style: normal;
+  font-size: 19.17px;
+  line-height: 100%;
+  letter-spacing: 0.02em;
+  color: #030303;
+  opacity: 1;
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useAuth } from "../context/auth";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -45,57 +45,63 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="relative hidden w-1/2 lg:block">
-        <img src="/img.jpg" alt="" className="h-full w-full object-fill" />
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
+    <div className="h-screen overflow-hidden">
+      <div className="flex h-full">
+        <div className="relative hidden h-full w-[40%] lg:block">
+          <img src="/img.jpg" alt="" className="h-full w-full object-cover" />
 
-      <div className="flex w-full items-center justify-center overflow-y-auto px-6 py-10 lg:w-1/2">
-        <div className="w-full max-w-110.75 space-y-7.5">
-          <h2 className="font-heading mb-5 text-h2 text-gray-900">Login</h2>
-          <p className="mb-5 text-body-small text-gray-500">
-            Please enter your login details
-          </p>
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <Input
-              icon={Mail}
-              type="email"
-              value={form.email}
-              onChange={updateField("email")}
-              placeholder="E-mail"
-            />
-            <Input
-              icon={Lock}
-              type="password"
-              isPassword
-              value={form.password}
-              onChange={updateField("password")}
-              placeholder="Password"
-            />
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6 py-10 lg:w-[60%] lg:px-12">
+          <div className="mx-auto w-full max-w-[400px]">
+            <h2 className="signup-heading mb-6">Login</h2>
 
-            {error && (
-              <div className="rounded-lg border border-status-pending bg-red-50 px-4 py-3 text-body-small text-status-pending">
-                {error}
-              </div>
-            )}
+            <p className="para mb-6 max-w-[500px]">
+              Please enter your login details
+            </p>
 
-            <Button
-              type="submit"
-              icon={<ChevronRight size={16} />}
-              disabled={submitting}
-            >
-              {submitting ? "Logging in..." : "Login"}
-            </Button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                iconSrc="/envelop.svg"
+                type="email"
+                value={form.email}
+                onChange={updateField("email")}
+                placeholder="E-mail"
+              />
 
-            <AuthSwitchLink
-              prompt="Don't have an account?"
-              linkText="Create account"
-              to="/get-started"
-              className="text-center"
-            />
-          </form>
+              <Input
+                iconSrc="/lock.png"
+                type="password"
+                isPassword
+                value={form.password}
+                onChange={updateField("password")}
+                placeholder="******************"
+              />
+
+              {error && (
+                <div className="rounded-lg border border-status-pending bg-status-pending/10 px-4 py-3 text-body-small text-status-pending">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                icon={<ChevronRight size={16} />}
+                disabled={submitting}
+                className="w-[150px] h-[45px] rounded-lg px-[18.5px] flex items-center justify-between"
+              >
+                {submitting ? "Logging in..." : "Login"}
+              </Button>
+
+              <AuthSwitchLink
+                prompt="Don't have an account?"
+                linkText="Create account"
+                to="/get-started"
+                className="mt-6 flex w-full flex-row items-center gap-10 text-sm"
+              />
+            </form>
+          </div>
         </div>
       </div>
     </div>
