@@ -1,10 +1,10 @@
 import { statusLabels } from "../../utils/labels";
 
 const statusColors = {
-  new: { dot: "bg-red-500", text: "text-red-600" },
-  started: { dot: "bg-blue-500", text: "text-blue-600" },
-  resolved: { dot: "bg-green-500", text: "text-green-600" },
-  completed: { dot: "bg-green-500", text: "text-green-600" },
+  new: { bg: "bg-status-pending/10", text: "text-status-pending" },
+  started: { bg: "bg-status-progress/10", text: "text-status-progress" },
+  resolved: { bg: "bg-status-closed/10", text: "text-status-closed" },
+  completed: { bg: "bg-status-closed/10", text: "text-status-closed" },
 };
 
 export default function Badge({ status }) {
@@ -12,8 +12,9 @@ export default function Badge({ status }) {
   const label = statusLabels[status] || status;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 text-body-small font-medium ${colors.text}`}>
-      <span className={`h-2 w-2 rounded-full ${colors.dot}`} />
+    <span
+      className={`inline-flex items-center rounded-md px-2.5 py-1 text-body-xs font-medium ${colors.bg} ${colors.text}`}
+    >
       {label}
     </span>
   );
