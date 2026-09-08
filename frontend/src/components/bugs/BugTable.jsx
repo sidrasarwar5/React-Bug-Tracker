@@ -1,10 +1,15 @@
 import Badge from "../ui/Badge";
 import AvatarGroup from "../ui/AvatarGroup";
 import DropdownMenu from "../ui/DropdownMenu";
-import { Calendar } from "lucide-react";
 import { buildBugMenuItems } from "../../utils/bugMenu";
 
 const formatDate = (d) => new Date(d).toLocaleDateString("en-GB");
+
+const STATUS_DOT_COLORS = {
+  new: "#EC5962",
+  started: "#3069FE",
+  resolved: "#00B894",
+};
 
 export default function BugTable({
   bugs,
@@ -41,11 +46,21 @@ export default function BugTable({
 
           <thead className="border-b border-gray-200 bg-gray-100">
             <tr className="text-body-xs font-semibold uppercase tracking-wide text-gray-500">
-              <th className="whitespace-nowrap px-4 py-3 heading-label">Bug Details</th>
-              <th className="whitespace-nowrap px-4 py-3 heading-label">Status</th>
-              <th className="whitespace-nowrap px-4 py-3 heading-label">Due Date</th>
-              <th className="whitespace-nowrap px-4 py-3 heading-label">Assigned To</th>
-              <th className="whitespace-nowrap px-4 py-3 heading-label">Action</th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">
+                Bug Details
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">
+                Status
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">
+                Due Date
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">
+                Assigned To
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 heading-label">
+                Action
+              </th>
             </tr>
           </thead>
 
@@ -53,7 +68,7 @@ export default function BugTable({
             {bugs.map((bug) => {
               const menuItems = buildBugMenuItems(bug, {
                 onStatusChange,
-                onDelete,
+                onDeleteRequest: () => onDelete(bug._id),
                 canChangeStatus: canChangeStatus(bug),
                 canDelete: canDelete(bug),
               });
@@ -64,17 +79,27 @@ export default function BugTable({
                   className="cursor-pointer text-body-small hover:bg-gray-50"
                   onClick={() => onViewDetails(bug._id)}
                 >
-                  <td className="max-w-0 truncate px-4 py-3 text-gray-900">
-                    {bug.title}
+                  <td className="max-w-0 px-4 py-3">
+                    <div className="flex items-center gap-2 truncate">
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-full"
+                        style={{
+                          backgroundColor:
+                            STATUS_DOT_COLORS[bug.status] || "#9CA3AF",
+                        }}
+                      />
+                      <span className="bug-title truncate">{bug.title}</span>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <Badge status={bug.status} />
                   </td>
                   <td className="px-4 py-3 text-gray-500">
-                    <Calendar
-                      size={16}
-                      className="shrink-0"
+                    <img
+                      src="/BugListingPage/dueDate.svg"
+                      alt="Due date"
                       title={formatDate(bug.deadline)}
+                      className="h-4 w-4 shrink-0 object-contain"
                     />
                   </td>
                   <td className="overflow-hidden px-4 py-3">

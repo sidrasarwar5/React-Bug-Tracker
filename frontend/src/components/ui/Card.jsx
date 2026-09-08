@@ -1,6 +1,11 @@
-export default function Card({ children, className = "" }) {
+export default function Card({ children, className = "", bordered = true, style }) {
   return (
-    <div className={`rounded-2xl border border-gray-200 bg-white p-5 ${className}`}>
+    <div
+      className={`rounded bg-white p-5 ${
+        bordered ? "border border-gray-200" : ""
+      } ${className}`}
+      style={style}
+    >
       {children}
     </div>
   );

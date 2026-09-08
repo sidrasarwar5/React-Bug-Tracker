@@ -23,14 +23,14 @@ export default function Navbar() {
     {
       label: "Projects",
       active: isOnProjects,
-      iconSrc: "/project.svg",
-      iconActiveSrc: "/project-active.svg",
+      iconSrc: "/Navbar/project.svg",
+      iconActiveSrc: "/Navbar/project-active.svg",
     },
     {
       label: "Bugs",
       active: isOnBugs,
-      iconSrc: "/bug.svg",
-      iconActiveSrc: "/bug-active.svg",
+      iconSrc: "/Navbar/bug.svg",
+      iconActiveSrc: "/Navbar/bug-active.svg",
     },
   ];
 
@@ -55,7 +55,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <NavLink to={dashboardPath} className="flex items-center gap-2">
-            <img src="/logo.svg" alt="ManageBug" className="h-8 w-8" />
+            <img src="/Navbar/logo.svg" alt="ManageBug" className="h-8 w-8" />
             <span className="logoHeading">
               Manage<span className="logosmHeading">Bug</span>
             </span>
@@ -89,7 +89,7 @@ export default function Navbar() {
               className="flex items-center justify-center rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               aria-label="Notifications"
             >
-              <img src="/Notification.svg" alt="" className="h-5 w-5" />
+              <img src="/Navbar/Notification.svg" alt="" className="h-5 w-5" />
             </button>
 
             {user && <UserCapsule className="py-1.5 pr-4 pl-1.5" />}

@@ -60,14 +60,14 @@ export default function BugsToolbar({
   }, [isFilterOpen, isSortOpen]);
 
   return (
-    // Bottom divider line (small grey border) added here via border-b + pb-4
+   
     <div className="mb-4 flex w-full flex-col gap-3 border-b border-gray-200 pb-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
       <div className="w-full sm:w-64">
         <Input
           icon={Search}
           value={searchValue}
           onChange={onSearchChange}
-          placeholder="Search bugs..."
+          placeholder="Search"
         />
       </div>
 
@@ -91,7 +91,7 @@ export default function BugsToolbar({
               aria-label="Filter"
             >
               <img
-                src="/funnel.svg"
+                src="/bugToolbar/funnel.svg"
                 alt="Filter"
                 className="h-4 w-4 object-contain"
               />
@@ -175,7 +175,7 @@ export default function BugsToolbar({
               aria-label="Sort"
             >
               <img
-                src="/sort.svg"
+                src="/bugToolbar/sort.svg"
                 alt="Sort"
                 className="h-4 w-4 object-contain"
               />
@@ -212,7 +212,7 @@ export default function BugsToolbar({
               className="flex h-10 w-10 items-center justify-center"
             >
               <img
-                src={view === "grid" ? "/grid-active.svg" : "/grid.svg"}
+                src={view === "grid" ? "/bugToolbar/grid-active.svg" : "/bugToolbar/grid.svg"}
                 alt="Grid view"
                 className="h-4 w-4 object-contain"
               />
@@ -225,7 +225,7 @@ export default function BugsToolbar({
               className="flex h-10 w-10 items-center justify-center border-l border-gray-200"
             >
               <img
-                src={view === "list" ? "/list-active.svg" : "/list.svg"}
+                src={view === "list" ? "/bugToolbar/list-active.svg" : "/bugToolbar/list.svg"}
                 alt="List view"
                 className="h-4 w-4 object-contain"
               />

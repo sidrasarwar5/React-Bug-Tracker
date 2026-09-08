@@ -63,7 +63,7 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                iconSrc="/envelop.svg"
+                iconSrc="/Auth/envelop.svg"
                 type="email"
                 value={form.email}
                 onChange={updateField("email")}
@@ -71,7 +71,7 @@ export default function LoginPage() {
               />
 
               <Input
-                iconSrc="/lock.png"
+                iconSrc="/Auth/lock.png"
                 type="password"
                 isPassword
                 value={form.password}

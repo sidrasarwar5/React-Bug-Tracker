@@ -13,7 +13,7 @@ export default function Badge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-md px-2.5 py-1 text-body-xs font-medium ${colors.bg} ${colors.text}`}
+      className={`inline-flex items-center rounded px-2.5 py-1 text-body-xs font-medium ${colors.bg} ${colors.text}`}
     >
       {label}
     </span>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MoreVertical } from "lucide-react";
 
 export default function DropdownMenu({ items }) {
@@ -13,7 +14,12 @@ export default function DropdownMenu({ items }) {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     }
@@ -39,8 +45,9 @@ export default function DropdownMenu({ items }) {
     }
     setIsOpen((prev) => !prev);
   }
+
   return (
-    <div ref={menuRef}>
+    <div>
       <button
         ref={buttonRef}
         type="button"
@@ -51,59 +58,67 @@ export default function DropdownMenu({ items }) {
         <MoreVertical size={18} />
       </button>
 
-      {isOpen && (
-        <div
-          className="fixed z-9999 w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
-          style={{
-            top: `${menuPosition.top}px`,
-            right: `${menuPosition.right}px`,
-          }}
-        >
-          {items.map((item, index) => {
-            if (item.type === "header") {
+      {isOpen &&
+        createPortal(
+          <div
+            ref={menuRef}
+            className="fixed z-[9999] w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+            style={{
+              top: `${menuPosition.top}px`,
+              right: `${menuPosition.right}px`,
+            }}
+          >
+            {items.map((item, index) => {
+              if (item.type === "header") {
+                return (
+                  <div
+                    key={`header-${index}`}
+                    className="px-4 py-1.5 text-body-xs font-semibold text-gray-400"
+                  >
+                    {item.label}
+                  </div>
+                );
+              }
+
+              if (item.type === "divider") {
+                return (
+                  <div
+                    key={`divider-${index}`}
+                    className="my-1 border-t border-gray-100"
+                  />
+                );
+              }
+
               return (
-                <div
-                  key={`header-${index}`}
-                  className="px-4 py-1.5 text-body-xs font-semibold text-gray-400"
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    item.onClick();
+                    setIsOpen(false);
+                  }}
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left text-body-small hover:bg-gray-50 ${
+                    item.danger ? "text-status-pending" : "text-gray-700"
+                  }`}
                 >
-                  {item.label}
-                </div>
+                  <span className="flex items-center gap-2">
+                    {item.color && (
+                      <span className={`h-2 w-2 rounded-full ${item.color}`} />
+                    )}
+                    {item.label}
+                  </span>
+
+                  {item.icon && (
+                    <img src={item.icon} alt="" className="h-4 w-4" />
+                  )}
+                </button>
               );
-            }
-
-            if (item.type === "divider") {
-              return (
-                <div
-                  key={`divider-${index}`}
-                  className="my-1 border-t border-gray-100"
-                />
-              );
-            }
-
-            return (
-              <button
-                key={item.label}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  item.onClick();
-                  setIsOpen(false);
-                }}
-                className={`flex w-full items-center gap-2 px-4 py-2 text-left text-body-small hover:bg-gray-50 ${
-                  item.danger ? "text-status-pending" : "text-gray-700"
-                }`}
-              >
-                {item.color && (
-                  <span className={`h-2 w-2 rounded-full ${item.color}`} />
-                )}
-
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
+            })}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

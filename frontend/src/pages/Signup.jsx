@@ -104,21 +104,21 @@ export default function SignupPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                iconSrc="/Profile.svg"
+                iconSrc="/Auth/Profile.svg"
                 value={form.name}
                 onChange={updateField("name")}
                 placeholder="Name"
               />
 
               <Input
-                iconSrc="/phone.svg"
+                iconSrc="/Auth/phone.svg"
                 value={form.phone}
                 onChange={updateField("phone")}
                 placeholder="Mobile Number"
               />
 
               <Input
-                iconSrc="/envelop.svg"
+                iconSrc="/Auth/envelop.svg"
                 type="email"
                 value={form.email}
                 onChange={updateField("email")}
@@ -126,7 +126,7 @@ export default function SignupPage() {
               />
 
               <Input
-                iconSrc="/lock.png"
+                iconSrc="/Auth/lock.png"
                 type="password"
                 isPassword
                 value={form.password}
@@ -135,7 +135,7 @@ export default function SignupPage() {
               />
 
               <Input
-                iconSrc="/lock.png"
+                iconSrc="/Auth/lock.png"
                 type="password"
                 isPassword
                 value={form.confirmPassword}

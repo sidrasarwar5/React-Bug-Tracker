@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function Modal({ isOpen, onClose, title, children, footer }) {
   useEffect(() => {
@@ -10,7 +11,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 px-4"
       onClick={onClose}
@@ -25,6 +26,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }) {
         <div>{children}</div>
         {footer && <div className="mt-6 flex gap-3">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -13,7 +13,7 @@ export function getBugStatusOptions(bug) {
     : ["new", "started", "completed"];
 }
 
-export function buildBugMenuItems(bug, { onStatusChange, onDelete, canChangeStatus, canDelete }) {
+export function buildBugMenuItems(bug, { onStatusChange, onDeleteRequest, canChangeStatus, canDelete }) {
   const items = [];
 
   if (canChangeStatus) {
@@ -29,7 +29,12 @@ export function buildBugMenuItems(bug, { onStatusChange, onDelete, canChangeStat
 
   if (canDelete) {
     if (items.length > 0) items.push({ type: "divider" });
-    items.push({ label: "Delete", danger: true, onClick: () => onDelete(bug._id) });
+    items.push({
+      label: "Delete",
+      danger: true,
+      icon: "/delete.svg",
+      onClick: () => onDeleteRequest(bug),
+    });
   }
 
   return items;
