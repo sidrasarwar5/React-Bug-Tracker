@@ -281,3 +281,12 @@ body {
     letter-spacing: -0.6%;
     color: #000000;
   }
+    .status-header {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15.33px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    color: #000000;
+  }

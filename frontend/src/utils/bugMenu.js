@@ -1,10 +1,17 @@
 import { statusLabels } from "./labels";
 
-const statusColorMap = {
-  new: "bg-status-pending",
-  started: "bg-status-progress",
-  resolved: "bg-status-closed",
-  completed: "bg-status-closed",
+const statusBgMap = {
+  new: "bg-status-pending/10",
+  started: "bg-status-progress/10",
+  resolved: "bg-status-closed/10",
+  completed: "bg-status-closed/10",
+};
+
+const statusTextMap = {
+  new: "text-status-pending",
+  started: "text-status-progress",
+  resolved: "text-status-closed",
+  completed: "text-status-closed",
 };
 
 export function getBugStatusOptions(bug) {
@@ -18,10 +25,11 @@ export function buildBugMenuItems(bug, { onStatusChange, onDeleteRequest, canCha
 
   if (canChangeStatus) {
     items.push(
-      { type: "header", label: "Change Status" },
+      { type: "header", label: "Change Status" ,  className: "px-4 py-1.5 status-header",  },
       ...getBugStatusOptions(bug).map((status) => ({
         label: statusLabels[status],
-        color: statusColorMap[status],
+        bg: statusBgMap[status],
+        color: statusTextMap[status],
         onClick: () => onStatusChange(bug._id, status),
       }))
     );

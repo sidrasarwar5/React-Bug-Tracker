@@ -73,7 +73,10 @@ export default function DropdownMenu({ items }) {
                 return (
                   <div
                     key={`header-${index}`}
-                    className="px-4 py-1.5 text-body-xs font-semibold text-gray-400"
+                    className={
+                      item.className ||
+                      "px-4 py-1.5 text-body-xs font-semibold text-gray-400"
+                    }
                   >
                     {item.label}
                   </div>
@@ -103,12 +106,15 @@ export default function DropdownMenu({ items }) {
                     item.danger ? "text-status-pending" : "text-gray-700"
                   }`}
                 >
-                  <span className="flex items-center gap-2">
-                    {item.color && (
-                      <span className={`h-2 w-2 rounded-full ${item.color}`} />
-                    )}
-                    {item.label}
-                  </span>
+                  {item.color ? (
+                    <span
+                      className={`rounded-md px-2 py-1 text-body-xs font-medium ${item.bg} ${item.color}`}
+                    >
+                      {item.label}
+                    </span>
+                  ) : (
+                    <span>{item.label}</span>
+                  )}
 
                   {item.icon && (
                     <img src={item.icon} alt="" className="h-4 w-4" />
@@ -117,7 +123,7 @@ export default function DropdownMenu({ items }) {
               );
             })}
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );
