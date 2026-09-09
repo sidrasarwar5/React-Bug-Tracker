@@ -7,8 +7,15 @@ export default function MultiSelectDropdown({
   selectedIds,
   onChange,
   placeholder = "Assign to",
+  open,
+  onOpenChange,
+  showTrigger = true,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+  const setIsOpen = isControlled ? (onOpenChange ?? (() => {})) : setInternalOpen;
+
   const ref = useRef(null);
 
   useEffect(() => {
@@ -37,37 +44,45 @@ export default function MultiSelectDropdown({
 
   return (
     <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-body-small text-gray-700 hover:border-primary"
-      >
-        {selectedUsers.length > 0 ? (
-          <AvatarGroup users={selectedUsers} size="sm" />
-        ) : (
-          <span className="text-gray-400">{placeholder}</span>
-        )}
-      </button>
+      {showTrigger && (
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-body-small text-gray-700 hover:border-primary"
+        >
+          {selectedUsers.length > 0 ? (
+            <AvatarGroup users={selectedUsers} size="sm" />
+          ) : (
+            <span className="text-gray-400">{placeholder}</span>
+          )}
+        </button>
+      )}
 
       {isOpen && (
-        <div className="custom-scrollbar absolute left-0 top-full z-10 mt-1 max-h-72 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-          {options.map((user) => (
-            <label
-              key={user._id}
-              className="flex cursor-pointer items-center gap-2 px-3 py-2 text-body-small text-gray-700 hover:bg-gray-50"
-            >
-              <input
-                type="checkbox"
-                checked={selectedIds.includes(user._id)}
-                onChange={() => toggle(user._id)}
-                className="rounded border-gray-300 text-primary focus:ring-primary"
-              />
+        <div className="custom-scrollbar absolute left-0 top-full z-10 mt-1 max-h-72 w-max min-w-[10rem] max-w-xs overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {options.length === 0 ? (
+            <p className="whitespace-nowrap px-3 py-3 text-center text-body-small text-gray-400">
+              No developers added
+            </p>
+          ) : (
+            options.map((user) => (
+              <label
+                key={user._id}
+                className="flex cursor-pointer items-center gap-2 whitespace-nowrap px-3 py-2 text-body-small text-gray-700 hover:bg-gray-50"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(user._id)}
+                  onChange={() => toggle(user._id)}
+                  className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
 
-              <Avatar name={user.name} src={user.avatarUrl} size="sm" />
+                <Avatar name={user.name} src={user.avatarUrl} size="sm" />
 
-              <span className="min-w-0 truncate">{user.name}</span>
-            </label>
-          ))}
+                <span className="min-w-0 truncate">{user.name}</span>
+              </label>
+            ))
+          )}
         </div>
       )}
     </div>

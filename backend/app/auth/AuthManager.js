@@ -64,7 +64,14 @@ async function login({ email, password }) {
   };
 }
 
-async function updateProfile({ userId, name, phone, email, password, avatarUrl }) {
+async function updateProfile({
+  userId,
+  name,
+  phone,
+  email,
+  password,
+  avatarUrl,
+}) {
   const updates = {};
   if (name) updates.name = name;
   if (phone) updates.phone = phone;

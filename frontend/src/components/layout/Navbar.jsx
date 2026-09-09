@@ -2,6 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../context/auth";
+import Avatar from "../ui/Avatar";
 
 const DASHBOARD_ROUTES = {
   manager: "/manager",
@@ -39,9 +40,7 @@ export default function Navbar() {
       to="/profile"
       className={`flex items-center gap-2 rounded-lg bg-gray-100 hover:bg-gray-200 ${className}`}
     >
-      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
-        {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-      </span>
+      <Avatar name={user.name} src={user.avatarUrl} size="sm" />
       <span className="font-heading text-sm font-medium leading-none tracking-normal align-middle text-[#3B3F70]">
         {user.name || "User"}
       </span>
@@ -49,8 +48,8 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-white">
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+    <nav className=" bg-white">
+      <div className="mx-auto  w-full max-w-5xl px-4 sm:px-6 lg:px-8 ">
         {/* Main Navbar */}
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
@@ -107,7 +106,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="border-t border-gray-100 py-3 sm:hidden">
+          <div className="py-3 sm:hidden">
             <div className="flex flex-col gap-3">
               {NAV_LINKS.map((link) => (
                 <div

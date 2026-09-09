@@ -29,10 +29,22 @@ export async function updateProfile({ name, phone, email, password, avatarFile }
   if (password) formData.append("password", password);
   if (avatarFile) formData.append("avatar", avatarFile);
 
-  // No manual Content-Type header — axios detects FormData and sets
-  // "multipart/form-data; boundary=..." automatically. Setting it
-  // manually strips the boundary and breaks the upload.
+  
   const response = await api.patch("/auth/profile", formData);
 
+
+
+  return response.data;
+}
+
+
+
+
+export async function searchUsers(search, user_type) {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (user_type) params.append("user_type", user_type);
+
+  const response = await api.get(`/auth/users/search?${params.toString()}`);
   return response.data;
 }

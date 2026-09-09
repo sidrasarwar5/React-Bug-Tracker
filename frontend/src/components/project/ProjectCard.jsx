@@ -70,20 +70,23 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
 
       <Link to={`/projects/${project._id}/bugs`} className="block">
         <span
-          className="mb-4 flex h-11 w-11 items-center justify-center overflow-hidden rounded p-2.5"
-          style={{ backgroundColor: hasLogo ? "transparent" : defaultIcon.bg }}
+          className="mb-4 flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg"
+          style={{ backgroundColor: hasLogo ? "#F4F4F5" : defaultIcon.bg }}
         >
-          <img
-            src={hasLogo ? project.logo : defaultIcon.src}
-            alt={project.name}
-            className={
-              hasLogo
-                ? "h-full w-full object-cover "
-                : "h-full w-full object-contain"
-            }
-          />
+          {hasLogo ? (
+            <img
+              src={project.logo}
+              alt={project.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <img
+              src={defaultIcon.src}
+              alt={project.name}
+              className="h-7 w-7 object-contain"
+            />
+          )}
         </span>
-
         <h3 className="mb-3 text-body2 project-name">{project.name}</h3>
 
         {project.description && (

@@ -7,7 +7,6 @@ import AddProjectModal from "../components/project/AddProjectModal";
 import AssignPeopleModal from "../components/project/AssignPeopleModal";
 import { getProjects, createProject, deleteProject } from "../api/project";
 
-
 export default function ProjectsDashboard() {
   const { user } = useAuth();
   const canManage = user?.user_type === "manager";
@@ -18,7 +17,6 @@ export default function ProjectsDashboard() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
   const [activeProject, setActiveProject] = useState(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
@@ -43,7 +41,9 @@ export default function ProjectsDashboard() {
   const filteredProjects = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return projects;
-    return projects.filter((project) => project.name?.toLowerCase().includes(query));
+    return projects.filter((project) =>
+      project.name?.toLowerCase().includes(query),
+    );
   }, [projects, search]);
 
   const handleSearchChange = (event) => {
@@ -53,12 +53,11 @@ export default function ProjectsDashboard() {
   const handleCreate = async ({ name, description, logoFile }) => {
     try {
       setError("");
-      const project = await createProject(name, description, logoFile);
+
+      await createProject(name, description, logoFile);
       await loadProjects();
 
       setIsModalOpen(false);
-      setActiveProject(project);
-      setIsAssignModalOpen(true);
     } catch (err) {
       setError(err.response?.data?.error || "Failed to create project");
     }
@@ -77,7 +76,7 @@ export default function ProjectsDashboard() {
   const handleAssignModalClose = () => {
     setIsAssignModalOpen(false);
     setActiveProject(null);
-    loadProjects(); 
+    loadProjects();
   };
 
   return (
@@ -104,8 +103,6 @@ export default function ProjectsDashboard() {
         <ProjectGrid
           projects={filteredProjects}
           loading={loading}
-          // QA/Developer get neither prop — ProjectCard simply won't
-          // render delete/assign controls when these are undefined.
           onDelete={canManage ? handleDelete : undefined}
           onOpenAssign={
             canManage

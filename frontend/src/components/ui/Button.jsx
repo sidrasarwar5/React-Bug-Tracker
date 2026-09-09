@@ -14,6 +14,7 @@ export default function Button({
     accent: "bg-accent text-gray-900 hover:bg-accent-hover",
     outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
     secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
+    white:"bg-white text-primary border-1 "
   };
 
   const justifyStyle = icon ? "justify-between" : "justify-center";

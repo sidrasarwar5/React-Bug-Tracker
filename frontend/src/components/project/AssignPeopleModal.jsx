@@ -1,120 +1,95 @@
 import { useState } from "react";
-import { Check } from "lucide-react";
 import Modal from "../ui/Modal";
-import Input from "../ui/Input";
 import Button from "../ui/Button";
-import Select from "../ui/Select";
+import PeopleSearchSelect from "./PeopleSearchSelect";
 import { assignToProject } from "../../api/project";
 
 export default function AssignPeopleModal({ isOpen, onClose, project }) {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("qa");
-  const [assigned, setAssigned] = useState([]);
+  const [assignedQas, setAssignedQas] = useState([]);
+  const [assignedDevs, setAssignedDevs] = useState([]);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function handleClose() {
-    setEmail("");
-    setRole("qa");
-    setAssigned([]);
+    setAssignedQas([]);
+    setAssignedDevs([]);
     setError("");
     onClose();
   }
 
-  async function handleAdd() {
-    const trimmedEmail = email.trim();
-
-    if (!trimmedEmail || !project?._id) return;
+  async function handleSubmit() {
+    if (!project?._id || submitting) return;
+    if (assignedQas.length === 0 && assignedDevs.length === 0) {
+      handleClose();
+      return;
+    }
 
     setError("");
     setSubmitting(true);
 
     try {
-      await assignToProject(project._id, trimmedEmail, role);
-
-      setAssigned((prev) => [
-        ...prev,
-        {
-          email: trimmedEmail,
-          role,
-        },
+      await Promise.all([
+        ...assignedQas.map((u) => assignToProject(project._id, u.email, "qa")),
+        ...assignedDevs.map((u) =>
+          assignToProject(project._id, u.email, "developer")
+        ),
       ]);
 
-      setEmail("");
+      handleClose();
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to assign");
+      setError(err.response?.data?.error || "Failed to assign people");
     } finally {
       setSubmitting(false);
     }
   }
-
-  if (!isOpen) return null;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
       title={`Assign to ${project?.name || "project"}`}
-    >
-      <div className="space-y-4">
-        <div>
-          <label className="mb-1.5 block text-body-small font-medium text-gray-800">
-            Email
-          </label>
-
-          <div className="flex gap-2">
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email"
-              className="flex-1"
-              error={error}
-            />
-
-            <Select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-32 shrink-0"
-              options={[
-                { value: "qa", label: "QA" },
-                { value: "developer", label: "Developer" },
-              ]}
-            />
-          </div>
-
+      footer={
+        <div className="flex gap-3">
+          <Button className="flex-1" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "Assigning..." : "Confirm"}
+          </Button>
           <Button
-            type="button"
-            variant="primary"
-            className="mt-2 w-full"
-            onClick={handleAdd}
-            disabled={submitting || !email.trim()}
+            variant="secondary"
+            className="flex-1"
+            onClick={handleClose}
+            disabled={submitting}
           >
-            {submitting ? "Assigning..." : "Add"}
+            Cancel
           </Button>
         </div>
+      }
+    >
+      <div className="space-y-4 py-6">
+        <div className="space-y-2">
+          <label className="block text-body-small font-medium text-gray-800">
+            Assign QA
+          </label>
+          <PeopleSearchSelect
+            selected={assignedQas}
+            onChange={setAssignedQas}
+            userType="qa"
+          />
+        </div>
 
-        {assigned.length > 0 && (
-          <div className="custom-scrollbar  max-h-72 space-y-1.5 overflow-y-auto pr-1">
-            {assigned.map((person) => (
-              <div
-                key={`${person.email}-${person.role}`}
-                className="flex items-center gap-2 rounded-lg bg-status-closed/10 px-3 py-2 text-body-small text-gray-800"
-              >
-                <Check size={14} className="shrink-0 text-status-closed" />
+        <div className="space-y-2">
+          <label className="block text-body-small font-medium text-gray-800">
+            Assign Developers
+          </label>
+          <PeopleSearchSelect
+            selected={assignedDevs}
+            onChange={setAssignedDevs}
+            userType="developer"
+          />
+        </div>
 
-                <span className="min-w-0 break-all">{person.email}</span>
-
-                <span className="shrink-0 text-gray-400">({person.role})</span>
-              </div>
-            ))}
-          </div>
+        {error && (
+          <p className="text-body-small text-status-pending">{error}</p>
         )}
-      </div>
-
-      <div className="mt-6 flex gap-3">
-        <Button variant="secondary" className="flex-1" onClick={handleClose}>
-          {assigned.length > 0 ? "Done" : "Skip for now"}
-        </Button>
       </div>
     </Modal>
   );

@@ -13,6 +13,8 @@ export default function Input({
   error,
   required = false,
   className = "",
+  inputTextClassName = "text-gray-900",
+  showLabel = true,
   ...props
 }) {
   const [visible, setVisible] = useState(false);
@@ -22,12 +24,11 @@ export default function Input({
   return (
     <div className={className || "w-full"}>
       <div className="relative w-[80%]">
-        {/* SVG ICON */}
         {iconSrc && (
           <img
             src={iconSrc}
             alt=""
-            className="icon-color not-odd:pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 object-contain"
+            className="icon-color pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 object-contain"
           />
         )}
 
@@ -45,7 +46,7 @@ export default function Input({
           onChange={onChange}
           placeholder=" "
           required={required}
-          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
+          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 ${inputTextClassName} focus:text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
             iconSrc || Icon ? "pl-9" : ""
           } ${isPassword ? "pr-9" : ""} ${
             error ? "border-red-500" : "border-transparent"
@@ -53,28 +54,30 @@ export default function Input({
           {...props}
         />
 
-       <label
-  htmlFor={props.id || label}
-  className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
-    peer-focus:top-0
-    peer-focus:-translate-y-1/2
-    peer-focus:text-[11px]
-    peer-focus:font-normal
-    peer-focus:text-gray-900
-    peer-focus:bg-white
+        {showLabel !== false && (
+          <label
+            htmlFor={props.id || label}
+            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
+      ${showLabel === "onFocus" ? "opacity-0 peer-focus:opacity-100" : ""}
+      peer-focus:top-0
+      peer-focus:-translate-y-1/2
+      peer-focus:text-[11px]
+      peer-focus:font-normal
+      peer-focus:text-gray-900
+      peer-focus:bg-white
 
-    peer-[:not(:placeholder-shown)]:top-0
-    peer-[:not(:placeholder-shown)]:-translate-y-1/2
-    peer-[:not(:placeholder-shown)]:text-[11px]
-    peer-[:not(:placeholder-shown)]:font-normal
-    peer-[:not(:placeholder-shown)]:bg-white
+      peer-[:not(:placeholder-shown)]:top-0
+      peer-[:not(:placeholder-shown)]:-translate-y-1/2
+      peer-[:not(:placeholder-shown)]:text-[11px]
+      peer-[:not(:placeholder-shown)]:font-normal
+      peer-[:not(:placeholder-shown)]:bg-white
 
-    ${iconSrc || Icon ? "left-9" : "left-3.5"}
-  `}
->
-  {placeholder || label}
-</label>
-
+      ${iconSrc || Icon ? "left-9" : "left-3.5"}
+    `}
+          >
+            {placeholder || label}
+          </label>
+        )}
         {isPassword && (
           <button
             type="button"

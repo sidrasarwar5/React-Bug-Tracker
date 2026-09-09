@@ -6,7 +6,7 @@ export default function AvatarGroup({ users = [], max = 2, size = "sm" }) {
   }
 
   const visible = users.slice(0, max);
-  const overflow = users.length - visible.length;
+
 
   return (
     <div className="flex items-center -space-x-2">
@@ -14,11 +14,8 @@ export default function AvatarGroup({ users = [], max = 2, size = "sm" }) {
         <Avatar key={user._id} name={user.name} src={user.avatarUrl} size={size} />
       ))}
 
-      {overflow > 0 && (
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-body-small font-semibold text-gray-700 ring-2 ring-white">
-          +{overflow}
-        </span>
-      )}
+     
+    
     </div>
   );
 }

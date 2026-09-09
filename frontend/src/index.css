@@ -231,62 +231,121 @@ body {
   color: #87888c;
 }
 .card-shadow {
-    box-shadow:
-      0 4px 6px -2px rgba(0, 0, 0, 0.08),
-      -3px 0 6px -2px rgba(0, 0, 0, 0.05),
-      3px 0 6px -2px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+  box-shadow:
+    0 4px 6px -2px rgba(0, 0, 0, 0.08),
+    -3px 0 6px -2px rgba(0, 0, 0, 0.05),
+    3px 0 6px -2px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
 
-  .card-shadow:hover {
-    transform: translateY(-4px);
-    box-shadow:
-      0 8px 12px -3px rgba(0, 0, 0, 0.12),
-      -4px 0 8px -3px rgba(0, 0, 0, 0.07),
-      4px 0 8px -3px rgba(0, 0, 0, 0.07);
-  }
-  .bug-title {
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-size: 14.36px;
-    line-height: 166%;
-    letter-spacing: 0.41px;
-    vertical-align: middle;
-    color: #3A3541AD; /* note: last 2 chars are alpha (67% opacity) */
-  }
-   .bug-title-card {
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    font-size: 17px;
-    line-height: 166%;
-    letter-spacing: 0.6px;
-    vertical-align: middle;
-    color: #000000;
-  }
-   .bug-subheading-card {
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 166%;
-    letter-spacing: 0.46px;
-    vertical-align: middle;
-    color: #4C7399;
-  }
+.card-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 12px -3px rgba(0, 0, 0, 0.12),
+    -4px 0 8px -3px rgba(0, 0, 0, 0.07),
+    4px 0 8px -3px rgba(0, 0, 0, 0.07);
+}
+.bug-title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14.36px;
+  line-height: 166%;
+  letter-spacing: 0.41px;
+  vertical-align: middle;
+  color: #3a3541ad; /* note: last 2 chars are alpha (67% opacity) */
+}
+.bug-title-card {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 166%;
+  letter-spacing: 0.6px;
+  vertical-align: middle;
+  color: #000000;
+}
+.bug-subheading-card {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 166%;
+  letter-spacing: 0.46px;
+  vertical-align: middle;
+  color: #4c7399;
+}
 
-  .btn-label {
-    font-family: "Inter", sans-serif;
-    font-weight: 600;
-    font-size: 13.17px;
-    line-height: 22.57px;
-    letter-spacing: -0.6%;
-    color: #000000;
-  }
-    .status-header {
-    font-family: "Ubuntu", sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 15.33px;
-    letter-spacing: 0%;
-    vertical-align: middle;
-    color: #000000;
-  }
+.btn-label {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 13.17px;
+  line-height: 22.57px;
+  letter-spacing: -0.6%;
+  color: #000000;
+}
+.status-header {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15.33px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  color: #000000;
+}
+.profile-heading {
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 48px;
+  letter-spacing: -2.2%;
+  color: #252c32;
+}
+.profile-name {
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 33.86px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #0D141C;
+}
+.name-handle {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 29.02px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #4D7399;
+}
+.profile-input-value {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: #8b8fa8;
+}
+.profile-input-value:focus {
+  color: #000000;
+}
+.addproject-heading {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 20.35px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #000000;
+}
+.addproject-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 16.28px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #000000;
+ 
+}

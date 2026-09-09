@@ -10,10 +10,16 @@ const router = express.Router();
 router.post(`${AUTH_ROUTES_PREFIX}/signup`, AuthController.signup);
 router.post(`${AUTH_ROUTES_PREFIX}/login`, AuthController.login);
 
+router.get(
+  `${AUTH_ROUTES_PREFIX}/users/search`,
+  Authentication.authenticate,
+  AuthController.searchUsers,
+);
+
 router.patch(
   `${AUTH_ROUTES_PREFIX}/profile`,
   Authentication.authenticate,
-   UploadLogo.single("avatar"), 
+  UploadLogo.single("avatar"),
   AuthController.updateProfile,
 );
 

@@ -1,5 +1,29 @@
 const AuthManager = require("./AuthManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
+const User = require("../../models/user");
+
+const searchUsers = asyncHandler(async (req, res) => {
+  const { search = "", user_type } = req.query;
+
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (user_type) {
+    filter.user_type = user_type;
+  }
+
+  const users = await User.find(filter)
+    .select("_id name email user_type avatarUrl")
+    .limit(10);
+
+  res.json(users);
+});
 
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password, user_type, phone } = req.body;
@@ -56,4 +80,5 @@ module.exports = {
   signup,
   login,
   updateProfile,
+  searchUsers,
 };
