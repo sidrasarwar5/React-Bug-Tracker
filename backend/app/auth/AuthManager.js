@@ -79,7 +79,21 @@ async function updateProfile({
   if (avatarUrl) updates.avatarUrl = avatarUrl;
   if (password) updates.password = await bcrypt.hash(password, 10);
 
-  const updated = await User.findByIdAndUpdate(userId, updates, { new: true });
+  let updated;
+  try {
+    updated = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      const field =
+        Object.keys(err.keyPattern || err.keyValue || {})[0] || "value";
+      throw new AppError(`This ${field} is already in use`, 400);
+    }
+    throw err;
+  }
+
   if (!updated) {
     throw new AppError("User not found", 404);
   }

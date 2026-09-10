@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, User, Phone, ChevronRight } from "lucide-react";
 import { useAuth } from "../context/auth";
+import { useToast } from "../context/ToastContext";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import AuthSwitchLink from "../components/auth/AuthSwitchLink";
@@ -10,6 +11,7 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signup } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const [form, setForm] = useState({
     name: "",
@@ -20,7 +22,6 @@ export default function SignupPage() {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function updateField(field) {
@@ -34,26 +35,25 @@ export default function SignupPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
 
     if (!form.name.trim()) {
-      return setError("Full name is required");
+      return showError("Full name is required");
     }
 
     if (!form.email.trim()) {
-      return setError("Email is required");
+      return showError("Email is required");
     }
 
     if (!form.password.trim()) {
-      return setError("Password is required");
+      return showError("Password is required");
     }
 
     if (form.password.length < 6) {
-      return setError("Password must be at least 6 characters");
+      return showError("Password must be at least 6 characters");
     }
 
     if (form.password !== form.confirmPassword) {
-      return setError("Passwords do not match");
+      return showError("Passwords do not match");
     }
 
     try {
@@ -69,6 +69,8 @@ export default function SignupPage() {
 
       const userType = data.data.user_type;
 
+      showSuccess("Account created successfully");
+
       if (userType === "qa") {
         navigate("/qa");
       } else if (userType === "manager") {
@@ -79,7 +81,7 @@ export default function SignupPage() {
     } catch (err) {
       console.log("signup issue frontend", err);
 
-      setError(err.response?.data?.error || err.message || "Signup failed");
+      showError(err.response?.data?.error || err.message || "Signup failed");
     } finally {
       setSubmitting(false);
     }
@@ -142,12 +144,6 @@ export default function SignupPage() {
                 onChange={updateField("confirmPassword")}
                 placeholder="Confirm Password"
               />
-
-              {error && (
-                <div className="rounded-lg border border-status-pending bg-status-pending/10 px-4 py-3 text-body-small text-status-pending">
-                  {error}
-                </div>
-              )}
 
               <Button
                 type="submit"

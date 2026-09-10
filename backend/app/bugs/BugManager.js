@@ -33,7 +33,7 @@ async function createBug({
 
   const devUsers = await User.find({ email: { $in: devEmails } });
   if (devUsers.length !== devEmails.length) {
-    throw new AppError("One or more developers not found", 404);
+    throw new AppError("Developer not assigned to this bug", 404);
   }
 
   const assignedDevIds = project.assigneddeveloper.map((id) => id.toString());
@@ -42,7 +42,7 @@ async function createBug({
   );
   if (!allVerified) {
     throw new AppError(
-      "One or more developers not assigned to this project",
+      "Developers not assigned to this project",
       403,
     );
   }
@@ -76,21 +76,21 @@ async function createBug({
 async function updateStatus({ projectId, bugId, userId, status }) {
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new AppError("no such project found", 404);
+    throw new AppError("No such project found", 404);
   }
 
   const bug = await Bug.findById(bugId);
   if (!bug) {
-    throw new AppError("no such bug available", 404);
+    throw new AppError("No such bug is available", 404);
   }
 
   if (bug.projectRef.toString() !== projectId) {
-    throw new AppError("bug does not belong to this project", 403);
+    throw new AppError("This bug do not belong to this project", 403);
   }
 
   const isAssignedDev = bug.assignToDev.some((id) => id.toString() === userId);
   if (!isAssignedDev) {
-    throw new AppError("no such developer is assigned to bug", 403);
+    throw new AppError("This developer is not assigned to this bug", 403);
   }
 
   if (bug.type === "bug" && bug.status === "resolved") {

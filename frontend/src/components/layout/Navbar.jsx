@@ -48,70 +48,25 @@ export default function Navbar() {
   );
 
   return (
-    <nav className=" bg-white">
-      <div className="mx-auto  w-full max-w-5xl px-4 sm:px-6 lg:px-8 ">
-        {/* Main Navbar */}
-        <div className="flex items-center justify-between py-3">
-          {/* Logo */}
-          <NavLink to={dashboardPath} className="flex items-center gap-2">
-            <img src="/Navbar/logo.svg" alt="ManageBug" className="h-8 w-8" />
-            <span className="logoHeading">
-              Manage<span className="logosmHeading">Bug</span>
-            </span>
-          </NavLink>
+    <div className="sticky top-0 z-20">
+      <nav className=" bg-white">
+        <div className="mx-auto  w-full max-w-5xl px-4 sm:px-6 lg:px-8 ">
+          {/* Main Navbar */}
+          <div className="flex items-center justify-between py-3">
+            {/* Logo */}
+            <NavLink to={dashboardPath} className="flex items-center gap-2">
+              <img src="/Navbar/logo.svg" alt="ManageBug" className="h-8 w-8" />
+              <span className="logoHeading">
+                Manage<span className="logosmHeading">Bug</span>
+              </span>
+            </NavLink>
 
-          {/* Center Status Indicators (not clickable) */}
-          <div className="hidden items-center gap-6 sm:flex">
-            {NAV_LINKS.map((link) => (
-              <div
-                key={link.label}
-                className={`flex items-center gap-1.5 ${
-                  link.active ? "text-gray-900" : "text-gray-500"
-                }`}
-              >
-                <img
-                  src={link.active ? link.iconActiveSrc : link.iconSrc}
-                  alt=""
-                  className="h-4 w-4"
-                />
-                <span className="font-heading text-xs  font-semibold leading-none tracking-normal align-middle">
-                  {link.label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop Right Menu */}
-          <div className="hidden items-center gap-3 sm:flex">
-            <button
-              type="button"
-              className="flex items-center justify-center rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-              aria-label="Notifications"
-            >
-              <img src="/Navbar/Notification.svg" alt="" className="h-5 w-5" />
-            </button>
-
-            {user && <UserCapsule className="py-1.5 pr-4 pl-1.5" />}
-          </div>
-
-          {/* Mobile Hamburger */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 sm:hidden"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="py-3 sm:hidden">
-            <div className="flex flex-col gap-3">
+            {/* Center Status Indicators (not clickable) */}
+            <div className="hidden items-center gap-6 sm:flex">
               {NAV_LINKS.map((link) => (
                 <div
                   key={link.label}
-                  className={`flex items-center gap-1.5 text-body-small font-medium ${
+                  className={`flex items-center gap-1.5 ${
                     link.active ? "text-gray-900" : "text-gray-500"
                   }`}
                 >
@@ -120,15 +75,66 @@ export default function Navbar() {
                     alt=""
                     className="h-4 w-4"
                   />
-                  {link.label}
+                  <span className="font-heading text-xs  font-semibold leading-none tracking-normal align-middle">
+                    {link.label}
+                  </span>
                 </div>
               ))}
+            </div>
+
+            {/* Desktop Right Menu */}
+            <div className="hidden items-center gap-3 sm:flex">
+              <button
+                type="button"
+                className="flex items-center justify-center rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                aria-label="Notifications"
+              >
+                <img
+                  src="/Navbar/Notification.svg"
+                  alt=""
+                  className="h-5 w-5"
+                />
+              </button>
 
               {user && <UserCapsule className="py-1.5 pr-4 pl-1.5" />}
             </div>
+
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 sm:hidden"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-        )}
-      </div>
-    </nav>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="py-3 sm:hidden">
+              <div className="flex flex-col gap-3">
+                {NAV_LINKS.map((link) => (
+                  <div
+                    key={link.label}
+                    className={`flex items-center gap-1.5 text-body-small font-medium ${
+                      link.active ? "text-gray-900" : "text-gray-500"
+                    }`}
+                  >
+                    <img
+                      src={link.active ? link.iconActiveSrc : link.iconSrc}
+                      alt=""
+                      className="h-4 w-4"
+                    />
+                    {link.label}
+                  </div>
+                ))}
+
+                {user && <UserCapsule className="py-1.5 pr-4 pl-1.5" />}
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 }

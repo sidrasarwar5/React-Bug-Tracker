@@ -8,9 +8,11 @@ import UpdatestatusPage from "./pages/BugDetail";
 import AccountTypePage from "./pages/AccountTypePage";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
 import ProfilePage from "./pages/Profilepage";
+import { ToastProvider } from "./context/ToastContext"
 
 function App() {
   return (
+        <ToastProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -33,6 +35,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+     </ToastProvider>
   );
 }
 

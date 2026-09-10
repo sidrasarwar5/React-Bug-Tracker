@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/auth";
+import { useToast } from "../context/ToastContext";
 import Navbar from "../components/layout/Navbar";
 import PageHeader from "../components/project/PageHeader";
 import ProjectGrid from "../components/project/ProjectGrid";
@@ -9,12 +10,12 @@ import { getProjects, createProject, deleteProject } from "../api/project";
 
 export default function ProjectsDashboard() {
   const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
   const canManage = user?.user_type === "manager";
 
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [activeProject, setActiveProject] = useState(null);
@@ -23,12 +24,11 @@ export default function ProjectsDashboard() {
   const loadProjects = async () => {
     try {
       setLoading(true);
-      setError("");
 
       const data = await getProjects();
       setProjects(data);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to load projects");
+      showError(err.response?.data?.error || "Failed to load projects");
     } finally {
       setLoading(false);
     }
@@ -52,24 +52,24 @@ export default function ProjectsDashboard() {
 
   const handleCreate = async ({ name, description, logoFile }) => {
     try {
-      setError("");
-
       await createProject(name, description, logoFile);
       await loadProjects();
 
+      showSuccess("Project created successfully");
       setIsModalOpen(false);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to create project");
+      showError(err.response?.data?.error || "Failed to create project");
     }
   };
 
   const handleDelete = async (projectId) => {
     try {
-      setError("");
       await deleteProject(projectId);
       await loadProjects();
+
+      showSuccess("Project deleted");
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to delete project");
+      showError(err.response?.data?.error || "Failed to delete project");
     }
   };
 
@@ -93,12 +93,6 @@ export default function ProjectsDashboard() {
           actionLabel={canManage ? "Add New Project" : undefined}
           onAction={canManage ? () => setIsModalOpen(true) : undefined}
         />
-
-        {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-3 text-body-small text-status-pending">
-            {error}
-          </div>
-        )}
 
         <ProjectGrid
           projects={filteredProjects}

@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Phone, Mail, Lock, Camera } from "lucide-react";
 import { useAuth } from "../context/auth";
+import { useToast } from "../context/ToastContext";
 import { updateProfile } from "../api/user";
 import Navbar from "../components/layout/Navbar";
 import Input from "../components/ui/Input";
@@ -10,6 +11,7 @@ import Avatar from "../components/ui/Avatar";
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuth();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -21,7 +23,6 @@ export default function ProfilePage() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function handleAvatarChange(e) {
@@ -39,21 +40,22 @@ export default function ProfilePage() {
   const handle = buildHandle(user?.name);
 
   async function handleSubmit() {
-    setError("");
     try {
       setSubmitting(true);
       const data = await updateProfile({
         name,
         phone,
         email,
-        password,
+        password: password.trim() || undefined,
         avatarFile,
       });
 
       updateUser(data.data);
+      showSuccess("Profile updated successfully");
+      setPassword("");
       navigate(-1);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to update profile");
+      showError(err.response?.data?.error || "Failed to update profile");
     } finally {
       setSubmitting(false);
     }
@@ -66,15 +68,12 @@ export default function ProfilePage() {
         <div className="border-b border-gray-200" />
       </div>
 
-      {/* Heading — full width, aligned with Navbar's left edge */}
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 ">
         <h2 className="mb-6 pt-8 profile-heading">Profile Settings</h2>
       </div>
 
-      {/* Form — separately centered, narrower */}
       <div className="flex w-full flex-col items-center px-4 sm:px-6 lg:px-8">
         <main className="w-full max-w-md pb-8">
-          {/* Avatar + name/handle */}
           <div className="mb-6 flex flex-col items-center">
             <button
               type="button"
@@ -134,15 +133,12 @@ export default function ProfilePage() {
               iconSrc="/Auth/lock.png"
               value={password}
               isPassword
+              autoComplete="new-password"
+              placeholder="........"
               onChange={(e) => setPassword(e.target.value)}
               inputTextClassName="profile-input-value"
             />
           </div>
-          {error && (
-            <div className="rounded-lg border border-status-pending bg-status-pending/10 px-4 py-3 text-body-small text-status-pending">
-              {error}
-            </div>
-          )}
 
           <div className="mx-auto w-full flex lg:w-3/4 gap-3 pt-4">
             <Button

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { useAuth } from "../context/auth";
+import { useToast } from "../context/ToastContext";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import AuthSwitchLink from "../components/auth/AuthSwitchLink";
@@ -9,9 +10,9 @@ import AuthSwitchLink from "../components/auth/AuthSwitchLink";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function updateField(field) {
@@ -20,12 +21,11 @@ export default function LoginPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
 
-    if (!form.email.trim()) return setError("Email is required");
-    if (!form.password.trim()) return setError("Password is required");
+    if (!form.email.trim()) return showError("Email is required");
+    if (!form.password.trim()) return showError("Password is required");
     if (form.password.length < 6)
-      return setError("Password must be at least 6 characters");
+      return showError("Password must be at least 6 characters");
 
     try {
       setSubmitting(true);
@@ -33,12 +33,14 @@ export default function LoginPage() {
       const data = await login(form.email.trim().toLowerCase(), form.password);
       const userType = data.data.user_type;
 
+      showSuccess("Logged in successfully");
+
       if (userType === "qa") navigate("/qa");
       else if (userType === "manager") navigate("/manager");
       else navigate("/developer");
     } catch (err) {
       console.log("login issue frontend", err);
-      setError(err.response?.data?.error || err.message || "login failed");
+      showError(err.response?.data?.error || err.message || "Login failed");
     } finally {
       setSubmitting(false);
     }
@@ -78,12 +80,6 @@ export default function LoginPage() {
                 onChange={updateField("password")}
                 placeholder="******************"
               />
-
-              {error && (
-                <div className="rounded-lg border border-status-pending bg-status-pending/10 px-4 py-3 text-body-small text-status-pending">
-                  {error}
-                </div>
-              )}
 
               <Button
                 type="submit"

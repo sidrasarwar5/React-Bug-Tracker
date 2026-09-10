@@ -6,6 +6,7 @@ import Select from "../ui/Select";
 import AvatarGroup from "../ui/AvatarGroup";
 import MultiSelectDropdown from "../ui/MultiSelectDropdown";
 import { CreateBug } from "../../api/bug";
+import { useToast } from "../../context/ToastContext";
 
 export default function CreateBugModal({
   isOpen,
@@ -14,13 +15,14 @@ export default function CreateBugModal({
   developers,
   onCreated,
 }) {
+  const { showSuccess, showError } = useToast();
+
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [type, setType] = useState("bug");
   const [deadline, setDeadline] = useState("");
   const [assignedDevIds, setAssignedDevIds] = useState([]);
   const [file, setFile] = useState(null);
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
 
@@ -34,15 +36,13 @@ export default function CreateBugModal({
     setDeadline("");
     setAssignedDevIds([]);
     setFile(null);
-    setError("");
   }
 
   async function handleSubmit() {
-    if (!title.trim()) return;
+    if (!title.trim()) return showError("Title is required");
 
     try {
       setSubmitting(true);
-      setError("");
 
       const formData = new FormData();
 
@@ -67,11 +67,12 @@ export default function CreateBugModal({
 
       await CreateBug(projectId, formData);
 
+      showSuccess("Bug added successfully");
       resetForm();
       onCreated();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to create bug");
+      showError(err.response?.data?.error || "Failed to create bug");
     } finally {
       setSubmitting(false);
     }
@@ -248,10 +249,6 @@ export default function CreateBugModal({
             )}
           </p>
         </div>
-
-        {error && (
-          <p className="text-body-small text-status-pending">{error}</p>
-        )}
       </div>
 
       <button

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/auth";
+import { useToast } from "../context/ToastContext";
 import { getProjectBugs, UpdateStatus, DeleteBug } from "../api/bug";
 import { getProjects } from "../api/project";
 import Navbar from "../components/layout/Navbar";
@@ -15,11 +16,11 @@ export default function ProjectBugsPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const [project, setProject] = useState(null);
   const [bugs, setBugs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [view, setView] = useState("grid");
   const [search, setSearch] = useState("");
   const [assignedTo, setAssignedTo] = useState("all");
@@ -35,18 +36,17 @@ export default function ProjectBugsPage() {
       const data = await getProjects();
       setProject(data.find((p) => p._id === projectId) || null);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to load project");
+      showError(err.response?.data?.error || "Failed to load project");
     }
   };
 
   const loadBugs = async () => {
     try {
       setLoading(true);
-      setError("");
       const data = await getProjectBugs(projectId);
       setBugs(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(
+      showError(
         err.response?.data?.error || "Failed to load bugs for this project",
       );
     } finally {
@@ -118,9 +118,10 @@ export default function ProjectBugsPage() {
     );
     try {
       await UpdateStatus(projectId, bugId, status);
+      showSuccess("Bug status updated");
     } catch (err) {
       setBugs(previous);
-      setError(err.response?.data?.error || "Failed to update status");
+      showError(err.response?.data?.error || "Failed to update status");
     }
   };
 
@@ -137,15 +138,14 @@ export default function ProjectBugsPage() {
     if (!bugToDelete) return;
 
     try {
-      setError("");
-
       await DeleteBug(projectId, bugToDelete);
       await loadBugs();
 
+      showSuccess("Bug deleted");
       setIsDeleteModalOpen(false);
       setBugToDelete(null);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to delete bug");
+      showError(err.response?.data?.error || "Failed to delete bug");
     }
   };
 
@@ -176,12 +176,6 @@ export default function ProjectBugsPage() {
             user?.user_type === "qa" ? () => setIsBugModalOpen(true) : undefined
           }
         />
-
-        {error && (
-          <div className="mb-6 rounded-lg bg-status-pending/10 p-3 text-body-small text-status-pending">
-            {error}
-          </div>
-        )}
 
         <BugsToolbar
           searchValue={search}

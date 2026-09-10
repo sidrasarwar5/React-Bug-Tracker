@@ -14,24 +14,41 @@ const statusTextMap = {
   completed: "text-status-closed",
 };
 
+const STATUS_ORDER_BY_TYPE = {
+  bug: ["new", "started", "resolved"],
+  feature: ["new", "started", "completed"],
+};
+
 export function getBugStatusOptions(bug) {
-  return bug.type === "bug"
-    ? ["new", "started", "resolved"]
-    : ["new", "started", "completed"];
+  const order =
+    bug.type === "bug"
+      ? STATUS_ORDER_BY_TYPE.bug
+      : STATUS_ORDER_BY_TYPE.feature;
+
+  const currentIndex = order.indexOf(bug.status);
+  if (currentIndex === -1) return order;
+  return order.filter((_, idx) => idx >= currentIndex);
 }
 
-export function buildBugMenuItems(bug, { onStatusChange, onDeleteRequest, canChangeStatus, canDelete }) {
+export function buildBugMenuItems(
+  bug,
+  { onStatusChange, onDeleteRequest, canChangeStatus, canDelete },
+) {
   const items = [];
 
   if (canChangeStatus) {
     items.push(
-      { type: "header", label: "Change Status" ,  className: "px-4 py-1.5 status-header",  },
+      {
+        type: "header",
+        label: "Change Status",
+        className: "px-4 py-1.5 status-header",
+      },
       ...getBugStatusOptions(bug).map((status) => ({
         label: statusLabels[status],
         bg: statusBgMap[status],
         color: statusTextMap[status],
         onClick: () => onStatusChange(bug._id, status),
-      }))
+      })),
     );
   }
 
