@@ -302,7 +302,7 @@ body {
   line-height: 33.86px;
   letter-spacing: 0;
   text-align: center;
-  color: #0D141C;
+  color: #0d141c;
 }
 .name-handle {
   font-family: Inter, sans-serif;
@@ -311,7 +311,7 @@ body {
   line-height: 29.02px;
   letter-spacing: 0;
   text-align: center;
-  color: #4D7399;
+  color: #4d7399;
 }
 .profile-input-value {
   font-family: "Poppins", sans-serif;
@@ -342,5 +342,8 @@ body {
   line-height: 100%;
   letter-spacing: 0;
   color: #000000;
- 
+}
+.icon-color {
+  filter: brightness(0) saturate(100%) invert(72%) sepia(41%) saturate(3553%)
+    hue-rotate(198deg) brightness(138%) contrast(37%);
 }

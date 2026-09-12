@@ -51,11 +51,10 @@ export default function LoginPage() {
       <div className="flex h-full">
         <div className="relative hidden h-full w-[40%] lg:block">
           <img src="/img.jpg" alt="" className="h-full w-full object-cover" />
-
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6 py-10 lg:w-[60%] lg:px-12">
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden pl-23 py-10 lg:w-[60%]">
           <div className="mx-auto w-full max-w-[400px]">
             <h2 className="signup-heading mb-6">Login</h2>
 
@@ -94,7 +93,7 @@ export default function LoginPage() {
                 prompt="Don't have an account?"
                 linkText="Create account"
                 to="/get-started"
-                className="mt-6 flex w-full flex-row items-center gap-10 text-sm"
+                className="mt-6 flex w-full flex-row items-center gap-6 text-sm"
               />
             </form>
           </div>

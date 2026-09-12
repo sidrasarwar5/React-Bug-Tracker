@@ -96,7 +96,7 @@ export default function SignupPage() {
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6 py-10 lg:w-[60%] lg:px-12">
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden pl-23  py-10 lg:w-[60%] ">
           <div className="mx-auto w-full max-w-[400px]">
             <h2 className="signup-heading mb-6">Sign Up</h2>
 

@@ -111,7 +111,7 @@ export default function CreateBugModal({
 
             <div className="relative flex items-center">
               {selectedDevs.length > 0 && (
-                <div className="mr-[-8px]">
+                <div className="relative z-20 mr-[-14px]">
                   <AvatarGroup users={selectedDevs} />
                 </div>
               )}
@@ -119,10 +119,16 @@ export default function CreateBugModal({
               <button
                 type="button"
                 onClick={() => setIsAssignOpen((prev) => !prev)}
-                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-gray-300 bg-white cursor-pointer"
+                className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-[#8D98AA] bg-white cursor-pointer"
                 aria-label="Assign developers"
               >
-                <span className="text-base leading-none text-gray-500">+</span>
+                <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white">
+                  <img
+                    src="/CreateBug/plusBadge.png"
+                    alt="Add"
+                    className="icon-color h-full w-full rounded-full object-contain"
+                  />
+                </span>
               </button>
 
               {isAssignOpen && (
@@ -160,7 +166,7 @@ export default function CreateBugModal({
                     el.click();
                   }
                 }}
-                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-gray-300 bg-white cursor-pointer"
+                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-[#8D98AA] bg-white cursor-pointer"
                 aria-label="Add due date"
               >
                 <img

@@ -27,12 +27,12 @@ export default function AccountTypePage() {
         </div>
 
         <div className="relative flex h-full w-full items-center justify-center overflow-y-auto px-6 py-10 lg:w-[60%]">
-        <AuthSwitchLink
-  prompt="Already have an account?"
-  linkText="Sign in"
-  to="/login"
-  className="absolute right-8 top-7 hidden items-center gap-1.5 xl:flex"
-/>
+          <AuthSwitchLink
+            prompt="Already have an account?"
+            linkText="Sign in"
+            to="/login"
+            className="absolute right-8 top-7 hidden items-center gap-1.5 xl:flex"
+          />
 
           <div className="mx-auto w-[80%] lg:w-[50%] max-w-150">
             <h2 className="signup-heading mb-3 mt-5">Join Us!</h2>
@@ -56,11 +56,11 @@ export default function AccountTypePage() {
             </div>
 
             <AuthSwitchLink
-  prompt="Already have an account?"
-  linkText="Sign in"
-  to="/login"
-  className="mt-8 flex items-center justify-center gap-1.5 xl:hidden"
-/>
+              prompt="Already have an account?"
+              linkText="Sign in"
+              to="/login"
+              className="mt-8 flex items-center justify-center gap-1.5 xl:hidden"
+            />
           </div>
         </div>
       </div>

@@ -7,15 +7,17 @@ export default function AvatarGroup({ users = [], max = 2, size = "sm" }) {
 
   const visible = users.slice(0, max);
 
-
   return (
     <div className="flex items-center -space-x-2">
-      {visible.map((user) => (
-        <Avatar key={user._id} name={user.name} src={user.avatarUrl} size={size} />
+      {visible.map((user, i) => (
+        <Avatar
+          key={user._id}
+          name={user.name}
+          src={user.avatarUrl}
+          size={size}
+          style={{ zIndex: visible.length - i }}
+        />
       ))}
-
-     
-    
     </div>
   );
 }
