@@ -96,7 +96,7 @@ export default function SignupPage() {
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative flex h-full w-full items-center justify-center overflow-hidden pl-23  py-10 lg:w-[60%] ">
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden pl-17 lg:pl-23  py-10 lg:w-[60%] ">
           <div className="mx-auto w-full max-w-[400px]">
             <h2 className="signup-heading mb-6">Sign Up</h2>
 
@@ -158,7 +158,7 @@ export default function SignupPage() {
                 prompt="Already have an account?"
                 linkText="Login to your account"
                 to="/login"
-                className="mt-6 flex w-full flex-row items-center gap-6 text-sm"
+                className="mt-6 flex w-full flex-row items-center gap-2 lg:gap-6 text-sm"
               />
             </form>
           </div>
