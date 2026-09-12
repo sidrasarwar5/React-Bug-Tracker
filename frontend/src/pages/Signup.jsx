@@ -153,12 +153,11 @@ export default function SignupPage() {
               >
                 {submitting ? "Signing up..." : "Sign Up"}
               </Button>
-
               <AuthSwitchLink
                 prompt="Already have an account?"
                 linkText="Login to your account"
                 to="/login"
-                className="mt-6 flex w-full flex-row items-center gap-2 lg:gap-6 text-sm"
+                className="mt-6 flex w-full flex-row flex-wrap items-center gap-2 text-sm lg:flex-nowrap lg:gap-6"
               />
             </form>
           </div>
