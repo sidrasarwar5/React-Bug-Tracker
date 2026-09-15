@@ -84,12 +84,12 @@ export default function LoginPage() {
                 type="submit"
                 icon={<ChevronRight size={16} />}
                 disabled={submitting}
-                className="w-[150px] h-[45px] rounded-lg px-[13px] flex items-center mb-5 py-7 justify-between whitespace-nowrap"
+                className="w-[140px] h-[43px] rounded-lg px-[7px] flex items-center mb-5 py-6.5 justify-between whitespace-nowrap"
               >
                 {submitting ? "Logging in..." : "Login"}
               </Button>
 
-              <div className="h-px w-4/5 bg-gray-200" />
+              <div className="h-px w-4/5 bg-gray-100" />
 
               <AuthSwitchLink
                 prompt="Don't have an account?"
