@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function Input({
@@ -15,13 +15,12 @@ export default function Input({
   className = "",
   inputTextClassName = "text-gray-900",
   showLabel = true,
-  variant = "filled",
   ...props
 }) {
   const [visible, setVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
-  const resolvedType = isPassword ? (visible ? "text" : "password") : type;
+  const cursorPos = useRef(null);
+  const inputRef = useRef(null);
 
   const defaultFilter =
     "brightness(0) saturate(100%) invert(59%) sepia(9%) saturate(650%) hue-rotate(190deg) brightness(92%) contrast(90%)";
@@ -29,20 +28,83 @@ export default function Input({
   const focusFilter =
     "brightness(0) saturate(100%) invert(13%) sepia(71%) saturate(6790%) hue-rotate(242deg) brightness(37%) contrast(71%)";
 
-  const isOutline = variant === "outline";
+  // Password fields are rendered as type="text" so we can fake the masking
+  // character ourselves (asterisks) instead of the browser's native dots.
+  const resolvedType = isPassword ? "text" : type;
+  const displayValue =
+    isPassword && !visible ? "*".repeat(value.length) : value;
 
-  // Input field background + border, per variant
-  const inputBgBorderClass = isOutline
-    ? `bg-white border border-gray-200 rounded focus:border-2 focus:border-primary ${
-        error ? "border-red-500" : ""
-      }`
-    : `bg-gray-100 rounded focus:bg-white focus:border-2 focus:border-primary ${
-        error ? "border-red-500" : "border-transparent"
-      }`;
+  const selStart = useRef(null);
+  const selEnd = useRef(null);
 
-  const labelBgClass = isOutline
-    ? "bg-white peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white"
-    : "bg-gray-100 peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white";
+  // Capture the cursor/selection BEFORE the DOM mutates, so we know exactly
+  // where the edit happened in the real (unmasked) value.
+  function handleBeforeInput(e) {
+    selStart.current = e.target.selectionStart;
+    selEnd.current = e.target.selectionEnd;
+  }
+
+  function handleChange(e) {
+    // Not a password field, or password is currently visible as plain text:
+    // the displayed value IS the real value, so just pass it through.
+    if (!isPassword || visible) {
+      onChange(e);
+      return;
+    }
+
+    const native = e.nativeEvent;
+    const prevReal = value;
+    const start = selStart.current ?? prevReal.length;
+    const end = selEnd.current ?? start;
+    const inputType = native.inputType;
+
+    let newReal = prevReal;
+    let newCursor = start;
+
+    if (inputType && inputType.startsWith("insert")) {
+      const inserted = native.data ?? "";
+      newReal = prevReal.slice(0, start) + inserted + prevReal.slice(end);
+      newCursor = start + inserted.length;
+    } else if (inputType === "deleteContentBackward") {
+      if (start !== end) {
+        newReal = prevReal.slice(0, start) + prevReal.slice(end);
+        newCursor = start;
+      } else if (start > 0) {
+        newReal = prevReal.slice(0, start - 1) + prevReal.slice(start);
+        newCursor = start - 1;
+      }
+    } else if (inputType === "deleteContentForward") {
+      if (start !== end) {
+        newReal = prevReal.slice(0, start) + prevReal.slice(end);
+        newCursor = start;
+      } else {
+        newReal = prevReal.slice(0, start) + prevReal.slice(start + 1);
+        newCursor = start;
+      }
+    }
+
+    cursorPos.current = newCursor;
+    onChange({
+      ...e,
+      target: {
+        ...e.target,
+        value: newReal,
+        name: e.target.name,
+        id: e.target.id,
+      },
+    });
+  }
+
+  useLayoutEffect(() => {
+    if (
+      isPassword &&
+      !visible &&
+      inputRef.current &&
+      cursorPos.current !== null
+    ) {
+      inputRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
+    }
+  }, [value, visible]);
 
   return (
     <div className={className || "w-full"}>
@@ -66,10 +128,12 @@ export default function Input({
         )}
 
         <input
+          ref={inputRef}
           id={props.id || label}
           type={resolvedType}
-          value={value}
-          onChange={onChange}
+          value={displayValue}
+          onBeforeInput={handleBeforeInput}
+          onChange={handleChange}
           onFocus={(e) => {
             setIsFocused(true);
             props.onFocus?.(e);
@@ -80,27 +144,36 @@ export default function Input({
           }}
           placeholder=" "
           required={required}
-          className={`input-field peer w-full px-3.5 pt-4 pb-1.5 ${inputTextClassName} focus:text-gray-900 outline-none transition-colors duration-200 ${inputBgBorderClass} ${
+          autoComplete={isPassword ? "new-password" : props.autoComplete}
+          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 ${
+            isPassword && !visible
+              ? "text-black text-lg font-bold tracking-wider"
+              : inputTextClassName
+          } focus:text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
             iconSrc || Icon ? "pl-9" : ""
-          } ${isPassword ? "pr-9" : ""}`}
+          } ${isPassword ? "pr-9" : ""} ${
+            error ? "border-red-500" : "border-transparent"
+          }`}
           {...props}
         />
 
         {showLabel !== false && (
           <label
             htmlFor={props.id || label}
-            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 px-1 text-gray-400 transition-all duration-200 ${labelBgClass}
+            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
       ${showLabel === "onFocus" ? "opacity-0 peer-focus:opacity-100" : ""}
       peer-focus:top-0
       peer-focus:-translate-y-1/2
       peer-focus:text-[11px]
       peer-focus:font-normal
       peer-focus:text-gray-900
+      peer-focus:bg-white
 
       peer-[:not(:placeholder-shown)]:top-0
       peer-[:not(:placeholder-shown)]:-translate-y-1/2
       peer-[:not(:placeholder-shown)]:text-[11px]
       peer-[:not(:placeholder-shown)]:font-normal
+      peer-[:not(:placeholder-shown)]:bg-white
 
       ${iconSrc || Icon ? "left-9" : "left-3.5"}
     `}
