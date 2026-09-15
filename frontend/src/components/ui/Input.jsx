@@ -15,12 +15,18 @@ export default function Input({
   className = "",
   inputTextClassName = "text-gray-900",
   showLabel = true,
+  variant = "filled",
   ...props
 }) {
   const [visible, setVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const cursorPos = useRef(null);
   const inputRef = useRef(null);
+  const selStart = useRef(null);
+  const selEnd = useRef(null);
+
+  // Star masking only while the password is hidden
+  const isMasked = isPassword && !visible;
 
   const defaultFilter =
     "brightness(0) saturate(100%) invert(59%) sepia(9%) saturate(650%) hue-rotate(190deg) brightness(92%) contrast(90%)";
@@ -28,14 +34,25 @@ export default function Input({
   const focusFilter =
     "brightness(0) saturate(100%) invert(13%) sepia(71%) saturate(6790%) hue-rotate(242deg) brightness(37%) contrast(71%)";
 
-  // Password fields are rendered as type="text" so we can fake the masking
-  // character ourselves (asterisks) instead of the browser's native dots.
-  const resolvedType = isPassword ? "text" : type;
-  const displayValue =
-    isPassword && !visible ? "*".repeat(value.length) : value;
+  const isOutline = variant === "outline";
 
-  const selStart = useRef(null);
-  const selEnd = useRef(null);
+  const inputBgBorderClass = isOutline
+    ? `bg-white border border-gray-200 rounded-lg focus:border-2 focus:border-primary ${
+        error ? "border-red-500" : ""
+      }`
+    : `bg-gray-100 focus:bg-white focus:border-2 focus:border-primary ${
+        error ? "border-red-500" : "border-transparent"
+      }`;
+
+  const labelBgClass = isOutline
+    ? "bg-white peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white"
+    : "bg-gray-100 peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white";
+
+  // Password fields are always rendered as type="text" so we can fake the
+  // masking character ourselves (asterisks) instead of the browser's
+  // native dots — the real password never sits in the masked DOM value.
+  const resolvedType = isPassword ? "text" : type;
+  const displayValue = isMasked ? "*".repeat(value.length) : value;
 
   // Capture the cursor/selection BEFORE the DOM mutates, so we know exactly
   // where the edit happened in the real (unmasked) value.
@@ -52,6 +69,10 @@ export default function Input({
       return;
     }
 
+    // Password is masked — e.target.value is the MASKED string with the new
+    // keystroke merged in, which is NOT the real password. Reconstruct the
+    // real value using the native InputEvent, which still reports the
+    // actual character(s) typed/deleted regardless of masking.
     const native = e.nativeEvent;
     const prevReal = value;
     const start = selStart.current ?? prevReal.length;
@@ -84,6 +105,8 @@ export default function Input({
     }
 
     cursorPos.current = newCursor;
+
+    // Hand the parent a synthetic event carrying the REAL reconstructed value.
     onChange({
       ...e,
       target: {
@@ -95,16 +118,12 @@ export default function Input({
     });
   }
 
+ 
   useLayoutEffect(() => {
-    if (
-      isPassword &&
-      !visible &&
-      inputRef.current &&
-      cursorPos.current !== null
-    ) {
+    if (isMasked && inputRef.current && cursorPos.current !== null) {
       inputRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
     }
-  }, [value, visible]);
+  }, [value, isMasked]);
 
   return (
     <div className={className || "w-full"}>
@@ -145,35 +164,33 @@ export default function Input({
           placeholder=" "
           required={required}
           autoComplete={isPassword ? "new-password" : props.autoComplete}
-          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 ${
-            isPassword && !visible
+          className={`input-field ${isMasked ? "input-field-masked" : ""} peer w-full px-3.5 pt-4 pb-1.5 ${
+            isMasked
               ? "text-black text-lg font-bold tracking-wider"
               : inputTextClassName
-          } focus:text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
+          } ${
+            isMasked ? "focus:text-black" : "focus:text-gray-900"
+          } outline-none transition-colors duration-200 ${inputBgBorderClass} ${
             iconSrc || Icon ? "pl-9" : ""
-          } ${isPassword ? "pr-9" : ""} ${
-            error ? "border-red-500" : "border-transparent"
-          }`}
+          } ${isPassword ? "pr-9" : ""}`}
           {...props}
         />
 
         {showLabel !== false && (
           <label
             htmlFor={props.id || label}
-            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
+            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 px-1 text-gray-400 transition-all duration-200 ${labelBgClass}
       ${showLabel === "onFocus" ? "opacity-0 peer-focus:opacity-100" : ""}
       peer-focus:top-0
       peer-focus:-translate-y-1/2
       peer-focus:text-[11px]
       peer-focus:font-normal
       peer-focus:text-gray-900
-      peer-focus:bg-white
 
       peer-[:not(:placeholder-shown)]:top-0
       peer-[:not(:placeholder-shown)]:-translate-y-1/2
       peer-[:not(:placeholder-shown)]:text-[11px]
       peer-[:not(:placeholder-shown)]:font-normal
-      peer-[:not(:placeholder-shown)]:bg-white
 
       ${iconSrc || Icon ? "left-9" : "left-3.5"}
     `}
