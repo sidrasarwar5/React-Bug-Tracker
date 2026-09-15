@@ -134,7 +134,7 @@ export default function ProfilePage() {
               value={password}
               isPassword
               autoComplete="new-password"
-              placeholder="........"
+              placeholder="Enter New password"
               onChange={(e) => setPassword(e.target.value)}
               inputTextClassName="profile-input-value"
             />
