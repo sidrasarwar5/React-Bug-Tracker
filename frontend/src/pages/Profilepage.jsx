@@ -32,11 +32,10 @@ export default function ProfilePage() {
     setAvatarPreview(URL.createObjectURL(file));
   }
   function buildHandle(name) {
-    if (!name) return "";
-    const parts = name.trim().split(/\s+/).slice(0, 2);
-    const joined = parts.join(".").toLowerCase();
-    return parts.length === 1 ? `@${joined}.` : `@${joined}`;
-  }
+  if (!name) return "";
+  const firstName = name.trim().split(/\s+/)[0].toLowerCase();
+  return `@${firstName}.`;
+}
   const handle = buildHandle(user?.name);
 
   async function handleSubmit() {

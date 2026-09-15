@@ -10,6 +10,12 @@ const DASHBOARD_ROUTES = {
   developer: "/developer",
 };
 
+function buildHandle(name) {
+  if (!name) return "";
+  const firstName = name.trim().split(/\s+/)[0].toLowerCase();
+  return `${firstName}.`;
+}
+
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -43,6 +49,8 @@ export default function Navbar() {
     navigate("/login");
   }
 
+  const handle = buildHandle(user?.name);
+
   const UserCapsule = ({ className = "" }) => (
     <NavLink
       to="/profile"
@@ -51,7 +59,7 @@ export default function Navbar() {
       <Avatar name={user?.name} src={user?.avatarUrl} size="sm" />
 
       <span className="font-heading text-sm font-medium leading-none tracking-normal text-[#3B3F70]">
-        {user?.name || "User"}
+        {handle || "User"}
       </span>
     </NavLink>
   );
