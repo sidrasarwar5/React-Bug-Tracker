@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function Input({
@@ -20,10 +20,8 @@ export default function Input({
 }) {
   const [visible, setVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const cursorPos = useRef(null);
-  const inputRef = useRef(null);
-  const selStart = useRef(null);
-  const selEnd = useRef(null);
+
+  const resolvedType = isPassword ? (visible ? "text" : "password") : type;
 
   // Star masking only while the password is hidden
   const isMasked = isPassword && !visible;
@@ -48,83 +46,6 @@ export default function Input({
     ? "bg-white peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white"
     : "bg-gray-100 peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white";
 
-  // Password fields are always rendered as type="text" so we can fake the
-  // masking character ourselves (asterisks) instead of the browser's
-  // native dots — the real password never sits in the masked DOM value.
-  const resolvedType = isPassword ? "text" : type;
-  const displayValue = isMasked ? "*".repeat(value.length) : value;
-
-  // Capture the cursor/selection BEFORE the DOM mutates, so we know exactly
-  // where the edit happened in the real (unmasked) value.
-  function handleBeforeInput(e) {
-    selStart.current = e.target.selectionStart;
-    selEnd.current = e.target.selectionEnd;
-  }
-
-  function handleChange(e) {
-    // Not a password field, or password is currently visible as plain text:
-    // the displayed value IS the real value, so just pass it through.
-    if (!isPassword || visible) {
-      onChange(e);
-      return;
-    }
-
-    // Password is masked — e.target.value is the MASKED string with the new
-    // keystroke merged in, which is NOT the real password. Reconstruct the
-    // real value using the native InputEvent, which still reports the
-    // actual character(s) typed/deleted regardless of masking.
-    const native = e.nativeEvent;
-    const prevReal = value;
-    const start = selStart.current ?? prevReal.length;
-    const end = selEnd.current ?? start;
-    const inputType = native.inputType;
-
-    let newReal = prevReal;
-    let newCursor = start;
-
-    if (inputType && inputType.startsWith("insert")) {
-      const inserted = native.data ?? "";
-      newReal = prevReal.slice(0, start) + inserted + prevReal.slice(end);
-      newCursor = start + inserted.length;
-    } else if (inputType === "deleteContentBackward") {
-      if (start !== end) {
-        newReal = prevReal.slice(0, start) + prevReal.slice(end);
-        newCursor = start;
-      } else if (start > 0) {
-        newReal = prevReal.slice(0, start - 1) + prevReal.slice(start);
-        newCursor = start - 1;
-      }
-    } else if (inputType === "deleteContentForward") {
-      if (start !== end) {
-        newReal = prevReal.slice(0, start) + prevReal.slice(end);
-        newCursor = start;
-      } else {
-        newReal = prevReal.slice(0, start) + prevReal.slice(start + 1);
-        newCursor = start;
-      }
-    }
-
-    cursorPos.current = newCursor;
-
-    // Hand the parent a synthetic event carrying the REAL reconstructed value.
-    onChange({
-      ...e,
-      target: {
-        ...e.target,
-        value: newReal,
-        name: e.target.name,
-        id: e.target.id,
-      },
-    });
-  }
-
- 
-  useLayoutEffect(() => {
-    if (isMasked && inputRef.current && cursorPos.current !== null) {
-      inputRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
-    }
-  }, [value, isMasked]);
-
   return (
     <div className={className || "w-full"}>
       <div className="relative w-[80%]">
@@ -147,12 +68,10 @@ export default function Input({
         )}
 
         <input
-          ref={inputRef}
           id={props.id || label}
           type={resolvedType}
-          value={displayValue}
-          onBeforeInput={handleBeforeInput}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           onFocus={(e) => {
             setIsFocused(true);
             props.onFocus?.(e);
@@ -163,14 +82,7 @@ export default function Input({
           }}
           placeholder=" "
           required={required}
-          autoComplete={isPassword ? "new-password" : props.autoComplete}
-          className={`input-field ${isMasked ? "input-field-masked" : ""} peer w-full px-3.5 pt-4 pb-1.5 ${
-            isMasked
-              ? "text-black text-lg font-bold tracking-wider"
-              : inputTextClassName
-          } ${
-            isMasked ? "focus:text-black" : "focus:text-gray-900"
-          } outline-none transition-colors duration-200 ${inputBgBorderClass} ${
+          className={`input-field ${isMasked ? "input-field-masked" : ""} peer w-full px-3.5 pt-4 pb-1.5 ${inputTextClassName} focus:text-gray-900 outline-none transition-colors duration-200 ${inputBgBorderClass} ${
             iconSrc || Icon ? "pl-9" : ""
           } ${isPassword ? "pr-9" : ""}`}
           {...props}
