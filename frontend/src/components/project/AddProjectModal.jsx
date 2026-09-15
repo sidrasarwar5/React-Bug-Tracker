@@ -85,7 +85,7 @@ export default function AddProjectModal({ isOpen, onClose, onCreate }) {
             variant="outline"
           />
 
-          <label className="addproject-label">Short details</label>
+          <label className="addproject-label pb-2">Short details</label>
           <Input
             label="Short details"
             value={description}
