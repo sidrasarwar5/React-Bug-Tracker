@@ -190,11 +190,12 @@ export default function CreateBugModal({
               <span className="text-body-small text-gray-500">{deadline}</span>
             )}
           </div>
-
+        </div>
+        <div className="w-24">
           <Select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-32 shrink-0"
+            className="w-32 h-8 shrink-0"
             options={[
               { value: "bug", label: "Bug" },
               { value: "feature", label: "Feature" },

@@ -14,11 +14,7 @@ export default function BugGrid({
   }
 
   if (bugs.length === 0) {
-    return (
-      <p className="text-body-small text-gray-500">
-        No bugs reported for this project yet.
-      </p>
-    );
+    return <p className="text-body-small text-gray-500">No bugs created yet</p>;
   }
 
   return (

@@ -15,7 +15,6 @@ async function createBug({
   assignToDev,
   img,
 }) {
-  
   const project = await Project.findById(projectId);
   if (!project) {
     throw new AppError("project not found", 404);
@@ -41,10 +40,7 @@ async function createBug({
     assignedDevIds.includes(dev._id.toString()),
   );
   if (!allVerified) {
-    throw new AppError(
-      "Developers not assigned to this project",
-      403,
-    );
+    throw new AppError("Developers not assigned to this project", 403);
   }
 
   const existingTitle = await Bug.findOne({ title, projectRef: projectId });
@@ -176,6 +172,27 @@ async function deleteBug({ projectId, bugId, userId }) {
   await bug.deleteOne();
   return { message: "Bug deleted successfully" };
 }
+async function getAllBugs({ userId, role }) {
+  let query;
+
+  if (role === "manager") {
+    const projects = await Project.find({ creater: userId }).select("_id");
+    query = { projectRef: { $in: projects.map((p) => p._id) } };
+  } else if (role === "qa") {
+    const projects = await Project.find({ assignedqas: userId }).select("_id");
+    query = { projectRef: { $in: projects.map((p) => p._id) } };
+  } else if (role === "developer") {
+    query = { assignToDev: userId };
+  } else {
+    throw new AppError("Invalid role", 403);
+  }
+
+  return Bug.find(query)
+    .populate("assignToDev", "name email avatarUrl")
+    .populate("reporter", "name email avatarUrl")
+    .populate("projectRef", "name")
+    .sort({ createdAt: -1 });
+}
 
 module.exports = {
   createBug,
@@ -183,4 +200,5 @@ module.exports = {
   bugDetail,
   getProjectBugs,
   deleteBug,
+  getAllBugs,
 };

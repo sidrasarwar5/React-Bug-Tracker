@@ -61,10 +61,20 @@ const deleteBug = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
+const getAllBugs = asyncHandler(async (req, res) => {
+  const bugs = await BugManager.getAllBugs({
+    userId: req.userId,
+    role: req.user_type,
+  });
+
+  res.json(bugs);
+});
+
 module.exports = {
   createBug,
   updateStatus,
   bugDetail,
   getProjectBugs,
   deleteBug,
+  getAllBugs,
 };

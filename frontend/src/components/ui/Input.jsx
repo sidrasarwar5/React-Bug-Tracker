@@ -15,6 +15,7 @@ export default function Input({
   className = "",
   inputTextClassName = "text-gray-900",
   showLabel = true,
+  variant = "filled",
   ...props
 }) {
   const [visible, setVisible] = useState(false);
@@ -27,6 +28,21 @@ export default function Input({
 
   const focusFilter =
     "brightness(0) saturate(100%) invert(13%) sepia(71%) saturate(6790%) hue-rotate(242deg) brightness(37%) contrast(71%)";
+
+  const isOutline = variant === "outline";
+
+  // Input field background + border, per variant
+  const inputBgBorderClass = isOutline
+    ? `bg-white border border-gray-200 rounded focus:border-2 focus:border-primary ${
+        error ? "border-red-500" : ""
+      }`
+    : `bg-gray-100 rounded focus:bg-white focus:border-2 focus:border-primary ${
+        error ? "border-red-500" : "border-transparent"
+      }`;
+
+  const labelBgClass = isOutline
+    ? "bg-white peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white"
+    : "bg-gray-100 peer-focus:bg-white peer-[:not(:placeholder-shown)]:bg-white";
 
   return (
     <div className={className || "w-full"}>
@@ -64,31 +80,27 @@ export default function Input({
           }}
           placeholder=" "
           required={required}
-          className={`input-field peer w-full bg-gray-100 px-3.5 pt-4 pb-1.5 ${inputTextClassName} focus:text-gray-900 outline-none transition-colors duration-200 focus:bg-white focus:border-2 focus:border-lightBlue ${
+          className={`input-field peer w-full px-3.5 pt-4 pb-1.5 ${inputTextClassName} focus:text-gray-900 outline-none transition-colors duration-200 ${inputBgBorderClass} ${
             iconSrc || Icon ? "pl-9" : ""
-          } ${isPassword ? "pr-9" : ""} ${
-            error ? "border-red-500" : "border-transparent"
-          }`}
+          } ${isPassword ? "pr-9" : ""}`}
           {...props}
         />
 
         {showLabel !== false && (
           <label
             htmlFor={props.id || label}
-            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 bg-gray-100 px-1 text-gray-400 transition-all duration-200
+            className={`input-label pointer-events-none absolute top-1/2 -translate-y-1/2 px-1 text-gray-400 transition-all duration-200 ${labelBgClass}
       ${showLabel === "onFocus" ? "opacity-0 peer-focus:opacity-100" : ""}
       peer-focus:top-0
       peer-focus:-translate-y-1/2
       peer-focus:text-[11px]
       peer-focus:font-normal
       peer-focus:text-gray-900
-      peer-focus:bg-white
 
       peer-[:not(:placeholder-shown)]:top-0
       peer-[:not(:placeholder-shown)]:-translate-y-1/2
       peer-[:not(:placeholder-shown)]:text-[11px]
       peer-[:not(:placeholder-shown)]:font-normal
-      peer-[:not(:placeholder-shown)]:bg-white
 
       ${iconSrc || Icon ? "left-9" : "left-3.5"}
     `}

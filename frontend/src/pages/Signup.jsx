@@ -149,7 +149,7 @@ export default function SignupPage() {
                 type="submit"
                 icon={<ChevronRight size={16} />}
                 disabled={submitting}
-                className="w-[150px] h-[45px] rounded-lg px-[18.5px] flex items-center justify-between"
+                className="w-[150px] h-[45px] rounded-lg px-[18.5px] flex items-center justify-between whitespace-nowrap"
               >
                 {submitting ? "Signing up..." : "Sign Up"}
               </Button>

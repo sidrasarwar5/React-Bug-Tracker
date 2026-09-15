@@ -2,17 +2,20 @@ import api from "./axios";
 
 export async function CreateBug(projectId, formData) {
   const response = await api.post(`/projects/${projectId}/bug`, formData, {
-    headers: { "Content-Type": "multipart/form-data" }
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
 }
 
-export async function UpdateStatus(projectId , bugId , status) {
-  const response = await api.patch(`/projects/${projectId}/bug/${bugId}/status`, { status });
+export async function UpdateStatus(projectId, bugId, status) {
+  const response = await api.patch(
+    `/projects/${projectId}/bug/${bugId}/status`,
+    { status },
+  );
   return response.data;
 }
 
-export async function BugDetail(projectId,bugId) {
+export async function BugDetail(projectId, bugId) {
   const response = await api.get(`/projects/${projectId}/bug/${bugId}`);
   return response.data;
 }
@@ -22,8 +25,12 @@ export async function getProjectBugs(projectId) {
   return response.data;
 }
 
-
 export async function DeleteBug(projectId, bugId) {
   const response = await api.delete(`/projects/${projectId}/bug/${bugId}`);
+  return response.data;
+}
+
+export async function getAllBugs() {
+  const response = await api.get(`/bugs`);
   return response.data;
 }

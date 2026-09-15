@@ -7,8 +7,10 @@ import ProjectBugsPage from "./pages/ProjectBugs";
 import UpdatestatusPage from "./pages/BugDetail";
 import AccountTypePage from "./pages/AccountTypePage";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
+import AllBugsPage from "./pages/AllBugsPage";
 import ProfilePage from "./pages/Profilepage";
 import { ToastProvider } from "./context/ToastContext"
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path="/manager" element={<ProjectsDashboard />} />
           <Route path="/qa" element={<ProjectsDashboard />} />
           <Route path="/developer" element={<ProjectsDashboard />} />
+          <Route path="/bugs" element={<AllBugsPage />} />
           <Route
             path="/projects/:projectId/bugs"
             element={<ProjectBugsPage />}

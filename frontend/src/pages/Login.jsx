@@ -77,23 +77,25 @@ export default function LoginPage() {
                 isPassword
                 value={form.password}
                 onChange={updateField("password")}
-                placeholder="******************"
+                placeholder="***********************"
               />
 
               <Button
                 type="submit"
                 icon={<ChevronRight size={16} />}
                 disabled={submitting}
-                className="w-[150px] h-[45px] rounded-lg px-[18.5px] flex items-center justify-between"
+                className="w-[150px] h-[45px] rounded-lg px-[13px] flex items-center mb-5 py-7 justify-between whitespace-nowrap"
               >
                 {submitting ? "Logging in..." : "Login"}
               </Button>
+
+              <div className="h-px w-4/5 bg-gray-200" />
 
               <AuthSwitchLink
                 prompt="Don't have an account?"
                 linkText="Create account"
                 to="/get-started"
-                className="mt-6 flex w-full flex-row items-center gap-2 lg:gap-6 text-sm"
+                className="mt-3 flex w-full flex-row items-center gap-2 lg:gap-6 text-sm"
               />
             </form>
           </div>

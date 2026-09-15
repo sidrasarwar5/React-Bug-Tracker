@@ -77,22 +77,23 @@ export default function AddProjectModal({ isOpen, onClose, onCreate }) {
     >
       <div className="grid grid-cols-1 gap-6 py-6 sm:grid-cols-[1fr_auto]">
         <div className="space-y-4">
-          <label className="addproject-label">Add project</label>
-
+          <label className="addproject-label pb-2">Add project</label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter project name"
+            variant="outline"
           />
-          <label className="addproject-label">Short details</label>
 
+          <label className="addproject-label">Short details</label>
           <Input
             label="Short details"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            
             placeholder="Enter details here"
+            variant="outline"
           />
+
           <div className="space-y-2">
             <label className="block addproject-label">Assign QA</label>
             <PeopleSearchSelect

@@ -10,13 +10,15 @@ const router = express.Router();
 
 router.use(Authentication.authenticate);
 
+router.get("/bugs", BugController.getAllBugs);
+
 router.get(`${BUGS_ROUTES_PREFIX}/bugs`, BugController.getProjectBugs);
 
 router.post(
   BUG_ROUTES_PREFIX,
   Authorization.auth("qa"),
   Upload.single("img"),
-  BugController.createBug
+  BugController.createBug,
 );
 
 router.get(`${BUG_ROUTES_PREFIX}/:bugId`, BugController.bugDetail);
@@ -24,12 +26,9 @@ router.get(`${BUG_ROUTES_PREFIX}/:bugId`, BugController.bugDetail);
 router.patch(
   `${BUG_ROUTES_PREFIX}/:bugId/status`,
   Authorization.auth("developer"),
-  BugController.updateStatus
+  BugController.updateStatus,
 );
 
-router.delete(
-  `${BUG_ROUTES_PREFIX}/:bugId`,
-  BugController.deleteBug
-);
+router.delete(`${BUG_ROUTES_PREFIX}/:bugId`, BugController.deleteBug);
 
 module.exports = router;
