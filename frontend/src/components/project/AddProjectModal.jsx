@@ -40,8 +40,8 @@ export default function AddProjectModal({ isOpen, onClose, onCreate }) {
         name: name.trim(),
         description: description.trim(),
         logoFile,
-        assignedQaIds: assignedQas.map((u) => u._id),
-        assignedDevIds: assignedDevs.map((u) => u._id),
+        assignedQas,
+        assignedDevs,
       });
       resetForm();
     } finally {

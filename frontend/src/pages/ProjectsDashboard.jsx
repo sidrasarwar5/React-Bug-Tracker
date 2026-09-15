@@ -6,7 +6,11 @@ import PageHeader from "../components/project/PageHeader";
 import ProjectGrid from "../components/project/ProjectGrid";
 import AddProjectModal from "../components/project/AddProjectModal";
 import AssignPeopleModal from "../components/project/AssignPeopleModal";
-import { getProjects, createProject, deleteProject } from "../api/project";
+import {
+  getProjects,
+  createProjectWithAssignments,
+  deleteProject,
+} from "../api/project";
 
 export default function ProjectsDashboard() {
   const { user } = useAuth();
@@ -50,9 +54,21 @@ export default function ProjectsDashboard() {
     setSearch(event.target.value);
   };
 
-  const handleCreate = async ({ name, description, logoFile }) => {
+  const handleCreate = async ({
+    name,
+    description,
+    logoFile,
+    assignedQas,
+    assignedDevs,
+  }) => {
     try {
-      await createProject(name, description, logoFile);
+      await createProjectWithAssignments(
+        name,
+        description,
+        logoFile,
+        assignedQas,
+        assignedDevs,
+      );
       await loadProjects();
 
       showSuccess("Project created successfully");
