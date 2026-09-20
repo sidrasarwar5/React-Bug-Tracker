@@ -133,7 +133,8 @@ export default function SignupPage() {
                 isPassword
                 value={form.password}
                 onChange={updateField("password")}
-                placeholder="Password"
+                placeholder="***********************"
+                floatLabel="Password"
               />
 
               <Input
@@ -142,7 +143,8 @@ export default function SignupPage() {
                 isPassword
                 value={form.confirmPassword}
                 onChange={updateField("confirmPassword")}
-                placeholder="Confirm Password"
+                placeholder="***********************"
+                floatLabel="Confirm Password"
               />
 
               <Button

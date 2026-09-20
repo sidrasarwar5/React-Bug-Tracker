@@ -78,6 +78,7 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={updateField("password")}
                 placeholder="***********************"
+                floatLabel="Password"
               />
 
               <Button

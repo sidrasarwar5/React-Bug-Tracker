@@ -7,6 +7,7 @@ export default function Input({
   value,
   onChange,
   placeholder,
+  floatLabel, // text shown on the label when it floats (focus or has value)
   icon: Icon,
   iconSrc,
   isPassword = false,
@@ -26,6 +27,11 @@ export default function Input({
   // Star masking only while the password is hidden
   const isMasked = isPassword && !visible;
 
+  // Label floats when the input is focused or has a value
+  const hasValue =
+    value !== undefined && value !== null && String(value).length > 0;
+  const isFloating = isFocused || hasValue;
+
   const defaultFilter =
     "brightness(0) saturate(100%) invert(59%) sepia(9%) saturate(650%) hue-rotate(190deg) brightness(92%) contrast(90%)";
 
@@ -35,10 +41,10 @@ export default function Input({
   const isOutline = variant === "outline";
 
   const inputBgBorderClass = isOutline
-    ? `bg-white border border-gray-200 rounded-lg focus:border-2 focus:border-primary ${
+    ? `bg-white border border-gray-200 rounded-lg focus:border-2 focus:border-lightBlue ${
         error ? "border-red-500" : ""
       }`
-    : `bg-gray-100 focus:bg-white focus:border-2 focus:border-primary ${
+    : `bg-gray-100 rounded focus:bg-white focus:border-2 focus:border-lightBlue ${
         error ? "border-red-500" : "border-transparent"
       }`;
 
@@ -107,7 +113,7 @@ export default function Input({
       ${iconSrc || Icon ? "left-9" : "left-3.5"}
     `}
           >
-            {placeholder || label}
+            {isFloating && floatLabel ? floatLabel : placeholder || label}
           </label>
         )}
         {isPassword && (
