@@ -9,11 +9,18 @@ const router = express.Router();
 
 router.post(`${AUTH_ROUTES_PREFIX}/signup`, AuthController.signup);
 router.post(`${AUTH_ROUTES_PREFIX}/login`, AuthController.login);
+router.post(`${AUTH_ROUTES_PREFIX}/logout`, AuthController.logout);
 
 router.get(
   `${AUTH_ROUTES_PREFIX}/users/search`,
   Authentication.authenticate,
   AuthController.searchUsers,
+);
+
+router.get(
+  `${AUTH_ROUTES_PREFIX}/me`,
+  Authentication.authenticate,
+  AuthController.getMe,
 );
 
 router.patch(

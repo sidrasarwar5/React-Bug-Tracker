@@ -1,13 +1,12 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv')
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
-dotenv.config()
+dotenv.config();
 
 function verifyToken(req, res, next) {
-  const authHeader = req.header('Authorization');
-  if (!authHeader) return res.status(401).json({ error: 'Access denied' });
+  const token = req.cookies?.token;
 
-  const token = authHeader.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: "Access denied" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN);
@@ -15,7 +14,7 @@ function verifyToken(req, res, next) {
     req.user_type = decoded.user_type;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+    res.status(401).json({ error: "Invalid token" });
   }
 }
 

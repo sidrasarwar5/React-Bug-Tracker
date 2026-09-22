@@ -1,128 +1,58 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { loginUser, signupUser } from "../api/user";
+import { loginUser, signupUser, logoutUser, getMe } from "../api/user";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
-
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+    async function checkSession() {
+      try {
+        const res = await getMe();
+        setUser(res.data);
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    setLoading(false);
+    checkSession();
   }, []);
 
   const login = async (email, password) => {
     const data = await loginUser(email, password);
-
-    const {
-      token: newToken,
-      userId,
-      name,
-      email: userEmail,
-      user_type,
-      phone,
-      avatarUrl,
-    } = data.data;
-
-    const userObj = {
-      userId,
-      name,
-      email: userEmail,
-      user_type,
-      phone,
-      avatarUrl,
-    };
-
-    setToken(newToken);
-    setUser(userObj);
-
-    localStorage.setItem("token", newToken);
-    localStorage.setItem("user", JSON.stringify(userObj));
-
+    setUser(data.data);
     return data;
   };
 
-  const signup = async (
-    name,
-    email,
-    password,
-    user_type,
-    phone
-  ) => {
-    const data = await signupUser(
-      name,
-      email,
-      password,
-      user_type,
-      phone
-    );
-
-    const {
-      token: newToken,
-      userId,
-      name: userName,
-      email: userEmail,
-      user_type: role,
-      phone: userPhone,
-      avatarUrl,
-    } = data.data;
-
-    const userObj = {
-      userId,
-      name: userName,
-      email: userEmail,
-      user_type: role,
-      phone: userPhone,
-      avatarUrl,
-    };
-
-    setToken(newToken);
-    setUser(userObj);
-
-    localStorage.setItem("token", newToken);
-    localStorage.setItem("user", JSON.stringify(userObj));
-
+  const signup = async (name, email, password, user_type, phone) => {
+    const data = await signupUser(name, email, password, user_type, phone);
+    setUser(data.data);
     return data;
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } finally {
+      setUser(null);
+    }
   };
 
   const updateUser = (updates) => {
-    setUser((prev) => {
-      const merged = {
-        ...prev,
-        ...updates,
-      };
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(merged)
-      );
-
-      return merged;
-    });
+    setUser((prev) => ({
+      ...prev,
+      ...updates,
+    }));
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
         loading,
         login,
         signup,
@@ -139,9 +69,7 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used within an AuthProvider"
-    );
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;

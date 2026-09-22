@@ -1,6 +1,16 @@
 const AuthManager = require("./AuthManager");
 const asyncHandler = require("../../helpers/AsyncHandler");
 const User = require("../../models/user");
+const AppError = require("../../helpers/AppError"); 
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days, matches current token expiry
+};
 
 const searchUsers = asyncHandler(async (req, res) => {
   const { search = "", user_type } = req.query;
@@ -36,9 +46,13 @@ const signup = asyncHandler(async (req, res) => {
     phone,
   });
 
+  const { token, ...userData } = data;
+
+  res.cookie("token", token, cookieOptions);
+
   res.status(200).json({
     success: true,
-    data,
+    data: userData,
   });
 });
 
@@ -50,9 +64,13 @@ const login = asyncHandler(async (req, res) => {
     password,
   });
 
+  const { token, ...userData } = data;
+
+  res.cookie("token", token, cookieOptions);
+
   res.status(200).json({
     success: true,
-    data,
+    data: userData,
   });
 });
 
@@ -76,9 +94,46 @@ const updateProfile = asyncHandler(async (req, res) => {
   });
 });
 
+const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: cookieOptions.httpOnly,
+    secure: cookieOptions.secure,
+    sameSite: cookieOptions.sameSite,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out",
+  });
+});
+
+const getMe = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.userId).select(
+    "_id name email user_type phone avatarUrl",
+  );
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      user_type: user.user_type,
+      phone: user.phone,
+      avatarUrl: user.avatarUrl,
+    },
+  });
+});
+
 module.exports = {
   signup,
   login,
+  logout,
+  getMe,
   updateProfile,
   searchUsers,
 };

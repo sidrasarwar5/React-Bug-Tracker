@@ -1,4 +1,3 @@
-
 import api from "./axios";
 
 export async function signupUser(name, email, password, user_type, phone) {
@@ -21,7 +20,23 @@ export async function loginUser(email, password) {
   return response.data;
 }
 
-export async function updateProfile({ name, phone, email, password, avatarFile }) {
+export async function logoutUser() {
+  const response = await api.post("/auth/logout");
+  return response.data;
+}
+
+export async function getMe() {
+  const response = await api.get("/auth/me");
+  return response.data;
+}
+
+export async function updateProfile({
+  name,
+  phone,
+  email,
+  password,
+  avatarFile,
+}) {
   const formData = new FormData();
   if (name) formData.append("name", name);
   if (phone) formData.append("phone", phone);
@@ -29,16 +44,10 @@ export async function updateProfile({ name, phone, email, password, avatarFile }
   if (password) formData.append("password", password);
   if (avatarFile) formData.append("avatar", avatarFile);
 
-  
   const response = await api.patch("/auth/profile", formData);
-
-
 
   return response.data;
 }
-
-
-
 
 export async function searchUsers(search, user_type) {
   const params = new URLSearchParams();

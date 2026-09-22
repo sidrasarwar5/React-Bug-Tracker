@@ -5,17 +5,22 @@ const dotenv = require("dotenv");
 const mongoDb = require("./config/db");
 const cors = require("cors");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 app.use(express.json());
+app.use(cookieParser());
+
+const isProduction = process.env.NODE_ENV === "production";
 
 app.use(
   cors({
-    origin: "https://react-bug-tracker-virid.vercel.app",
+    origin: isProduction
+      ? "https://react-bug-tracker-virid.vercel.app"
+      : "http://localhost:5173",
+    credentials: true,
   }),
 );
-
-// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
