@@ -30,6 +30,7 @@ export default function ProjectBugsPage() {
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   const [bugToDelete, setBugToDelete] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingBug, setDeletingBug] = useState(false);
 
   const loadProject = async () => {
     try {
@@ -160,6 +161,7 @@ export default function ProjectBugsPage() {
     if (!bugToDelete) return;
 
     try {
+      setDeletingBug(true);
       await DeleteBug(projectId, bugToDelete);
       await loadBugs();
 
@@ -168,6 +170,8 @@ export default function ProjectBugsPage() {
       setBugToDelete(null);
     } catch (err) {
       showError(err.response?.data?.error || "Failed to delete bug");
+    } finally {
+      setDeletingBug(false);
     }
   };
 
@@ -244,6 +248,7 @@ export default function ProjectBugsPage() {
         }}
         onConfirm={confirmDelete}
         title="Delete Bug"
+        loading={deletingBug}
         message="Are you sure you want to delete this bug? This action cannot be undone."
       />
     </div>

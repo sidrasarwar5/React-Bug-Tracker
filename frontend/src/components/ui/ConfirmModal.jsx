@@ -7,6 +7,9 @@ export default function ConfirmModal({
   onConfirm,
   title,
   message,
+  loading = false,
+  confirmLabel = "Delete",
+  loadingLabel = "Deleting...",
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
@@ -14,10 +17,20 @@ export default function ConfirmModal({
         <p className="text-body-small text-gray-600">{message}</p>
 
         <div className="mt-6 flex gap-3">
-          <Button variant="primary" className="flex-1" onClick={onConfirm}>
-            Delete
+          <Button
+            variant="primary"
+            className="flex-1"
+            onClick={onConfirm}
+            disabled={loading}
+          >
+            {loading ? loadingLabel : confirmLabel}
           </Button>
-          <Button variant="secondary" className="flex-1" onClick={onClose}>
+          <Button
+            variant="secondary"
+            className="flex-1"
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancel
           </Button>
         </div>
