@@ -32,10 +32,10 @@ export default function ProfilePage() {
     setAvatarPreview(URL.createObjectURL(file));
   }
   function buildHandle(name) {
-  if (!name) return "";
-  const firstName = name.trim().split(/\s+/)[0].toLowerCase();
-  return `@${firstName}.`;
-}
+    if (!name) return "";
+    const firstName = name.trim().split(/\s+/)[0].toLowerCase();
+    return `@${firstName}.`;
+  }
   const handle = buildHandle(user?.name);
 
   async function handleSubmit() {
@@ -133,7 +133,8 @@ export default function ProfilePage() {
               value={password}
               isPassword
               autoComplete="new-password"
-              placeholder="Enter New password"
+              placeholder="***********************"
+              floatLabel="Enter New Password"
               onChange={(e) => setPassword(e.target.value)}
               inputTextClassName="profile-input-value"
             />
