@@ -33,6 +33,7 @@ async function signup({ name, email, password, user_type, phone }) {
     phone: saved.phone,
     email: saved.email,
     user_type: saved.user_type,
+    avatarUrl: saved.avatarUrl,
     token,
   };
 }
@@ -60,6 +61,7 @@ async function login({ email, password }) {
     phone: user.phone,
     email: user.email,
     user_type: user.user_type,
+    avatarUrl: user.avatarUrl,
     token,
   };
 }
