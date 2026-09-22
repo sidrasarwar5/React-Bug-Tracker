@@ -94,7 +94,7 @@ export default function PeopleSearchSelect({ selected, onChange, userType }) {
         }}
         onFocus={openPanel}
         placeholder="Search by name or email..."
-        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2 text-body-small text-gray-900 outline-none focus:border-primary focus:bg-white"
+        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2 text-body-small text-gray-900 outline-none focus:border-2 focus:border-lightBlue focus:bg-white"
       />
 
       {isOpen &&
