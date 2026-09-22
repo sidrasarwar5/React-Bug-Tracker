@@ -25,13 +25,22 @@ function getDefaultIcon(projectId) {
 
 export default function ProjectCard({ project, onDelete, onOpenAssign }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const hasLogo = Boolean(project.logo);
   const defaultIcon = getDefaultIcon(project._id);
 
-  function handleConfirmDelete() {
-    onDelete(project._id);
-    setIsConfirmOpen(false);
+  async function handleConfirmDelete() {
+    try {
+      setIsDeleting(true);
+      await onDelete(project._id);
+      setIsConfirmOpen(false);
+    } catch {
+      // Error toast is already shown by ProjectsDashboard's handleDelete;
+      // keep the modal open here so the user can see it failed and retry.
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   return (
@@ -111,6 +120,7 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
           onClose={() => setIsConfirmOpen(false)}
           onConfirm={handleConfirmDelete}
           title="Delete Project"
+          loading={isDeleting}
           message={`Are you sure you want to delete "${project.name}"? This action cannot be undone.`}
         />
       )}
