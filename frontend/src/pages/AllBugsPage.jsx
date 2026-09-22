@@ -79,6 +79,28 @@ export default function AllBugsPage() {
     return sorted;
   }, [bugs, search, assignedTo, statusFilter, reportedFilter, sortBy, user]);
 
+  // Precompute each bug's permission flags ONCE here, only when the
+  // filtered list or user changes — instead of calling canChangeStatus()/
+  // canDelete() functions per bug on every single render inside the grid
+  // or table. This keeps things fast once the bug list grows large.
+  const bugsWithPermissions = useMemo(() => {
+    return filteredBugs.map((bug) => {
+      const canChangeStatus =
+        user?.user_type === "developer" &&
+        (bug.assignToDev || []).some((dev) => dev._id === user.userId);
+
+      const isManager = user?.user_type === "manager";
+      const isReporter = (bug.reporter?._id || bug.reporter) === user?.userId;
+      const canDelete = Boolean(user) && (isManager || isReporter);
+
+      return {
+        ...bug,
+        canChangeStatus,
+        canDelete,
+      };
+    });
+  }, [filteredBugs, user]);
+
   const assignedToOptions = useMemo(() => {
     const uniqueDevs = new Map();
     bugs.forEach((bug) =>
@@ -142,18 +164,6 @@ export default function AllBugsPage() {
     }
   };
 
-  const canChangeStatus = (bug) => {
-    if (!user || user.user_type !== "developer") return false;
-    return (bug.assignToDev || []).some((dev) => dev._id === user.userId);
-  };
-
-  const canDelete = (bug) => {
-    if (!user) return false;
-    const isManager = user.user_type === "manager";
-    const isReporter = (bug.reporter?._id || bug.reporter) === user.userId;
-    return isManager || isReporter;
-  };
-
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -185,23 +195,23 @@ export default function AllBugsPage() {
 
         {view === "grid" ? (
           <BugGrid
-            bugs={filteredBugs}
+            bugs={bugsWithPermissions}
             loading={loading}
             onViewDetails={handleViewDetails}
             onStatusChange={handleStatusChange}
             onDelete={handleDelete}
-            canChangeStatus={canChangeStatus}
-            canDelete={canDelete}
+            canChangeStatus={(bug) => bug.canChangeStatus}
+            canDelete={(bug) => bug.canDelete}
           />
         ) : (
           <BugTable
-            bugs={filteredBugs}
+            bugs={bugsWithPermissions}
             loading={loading}
             onViewDetails={handleViewDetails}
             onStatusChange={handleStatusChange}
             onDelete={handleDelete}
-            canChangeStatus={canChangeStatus}
-            canDelete={canDelete}
+            canChangeStatus={(bug) => bug.canChangeStatus}
+            canDelete={(bug) => bug.canDelete}
           />
         )}
       </main>
