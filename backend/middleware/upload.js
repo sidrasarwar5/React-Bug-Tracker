@@ -18,7 +18,9 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only PNG and GIF files are allowed"), false);
+      const error = new Error("Only PNG and GIF files are allowed");
+      error.statusCode = 400;
+      cb(error, false);
     }
   },
 });
