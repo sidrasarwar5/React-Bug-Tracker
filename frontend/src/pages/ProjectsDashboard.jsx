@@ -86,6 +86,7 @@ export default function ProjectsDashboard() {
       showSuccess("Project deleted");
     } catch (err) {
       showError(err.response?.data?.error || "Failed to delete project");
+      throw err;
     }
   };
 

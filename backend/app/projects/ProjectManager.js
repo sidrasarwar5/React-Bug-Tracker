@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const { SendMail } = require("../../utils/mail");
+const { deleteImages } = require("../../utils/cloudinaryDelete");
 const User = require("../../models/user");
 const Bug = require("../../models/bug");
 const Project = require("../../models/project");
@@ -41,7 +43,9 @@ async function assignProject({ projectId, managerId, email, user_type }) {
 
   const isQa = user.user_type === "qa";
   const targetList = isQa ? project.assignedqas : project.assigneddeveloper;
-  const alreadyAssigned = targetList.some((id) => id.toString() === user._id.toString());
+  const alreadyAssigned = targetList.some(
+    (id) => id.toString() === user._id.toString(),
+  );
 
   if (alreadyAssigned) {
     throw new AppError("Already", 409);
@@ -62,6 +66,10 @@ async function assignProject({ projectId, managerId, email, user_type }) {
 }
 
 async function deleteProject({ projectId, userId }) {
+  if (!mongoose.isValidObjectId(projectId)) {
+    throw new AppError("Invalid project id", 400);
+  }
+
   const project = await Project.findById(projectId);
   if (!project) {
     throw new AppError("Project not found", 404);
@@ -71,7 +79,19 @@ async function deleteProject({ projectId, userId }) {
     throw new AppError("Project not associated to this manger", 403);
   }
 
-  return Project.deleteOne({ _id: projectId });
+  // Collect image links BEFORE the records are deleted
+  const bugs = await Bug.find({ projectRef: projectId }).select("img").lean();
+  const imageUrls = [project.logo, ...bugs.map((bug) => bug.img)];
+
+  // Children first, parent last: if anything fails in between, the
+  // project still exists and the manager can simply click Delete again.
+  const { deletedCount } = await Bug.deleteMany({ projectRef: projectId });
+  await Project.deleteOne({ _id: projectId });
+
+  // Best effort cleanup; never throws
+  await deleteImages(imageUrls);
+
+  return { message: "Project and its bugs deleted", deletedBugs: deletedCount };
 }
 
 async function getProjects({ userId, userType }) {
@@ -103,7 +123,7 @@ async function getProjects({ userId, userType }) {
         ...project.toObject(),
         taskProgress: { done, total },
       };
-    })
+    }),
   );
 
   return projectsWithProgress;

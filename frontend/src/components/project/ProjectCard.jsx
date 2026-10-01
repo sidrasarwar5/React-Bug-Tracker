@@ -27,6 +27,8 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const itemCount = project.taskProgress?.total ?? 0;
+
   const hasLogo = Boolean(project.logo);
   const defaultIcon = getDefaultIcon(project._id);
 
@@ -121,7 +123,11 @@ export default function ProjectCard({ project, onDelete, onOpenAssign }) {
           onConfirm={handleConfirmDelete}
           title="Delete Project"
           loading={isDeleting}
-          message={`Are you sure you want to delete "${project.name}"? This action cannot be undone.`}
+          message={
+            itemCount > 0
+              ? `Are you sure you want to delete "${project.name}"? This will also permanently delete its ${itemCount} bug${itemCount === 1 ? "" : "s"}/feature${itemCount === 1 ? "" : "s"}. This action cannot be undone.`
+              : `Are you sure you want to delete "${project.name}"? This action cannot be undone.`
+          }
         />
       )}
     </Card>

@@ -3,6 +3,7 @@ const User = require("../../models/user");
 const Project = require("../../models/project");
 const Bug = require("../../models/bug");
 const AppError = require("../../helpers/AppError");
+const { deleteImage } = require("../../utils/cloudinaryDelete");
 
 async function createBug({
   projectId,
@@ -170,6 +171,7 @@ async function deleteBug({ projectId, bugId, userId }) {
   }
 
   await bug.deleteOne();
+  await deleteImage(bug.img);
   return { message: "Bug deleted successfully" };
 }
 async function getAllBugs({ userId, role }) {
